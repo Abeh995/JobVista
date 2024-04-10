@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/back">
+        <file>back-company-dark.png</file>
+        <file>back-company-white.png</file>
+    </qresource>
+    <qresource prefix="/icon">
+        <file>icon-logo.png</file>
+    </qresource>
+</RCC>
