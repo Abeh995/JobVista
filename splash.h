@@ -3,6 +3,9 @@
 
 #include <QWidget>
 
+extern QString ID;
+extern QString PhoneNumber;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class splash; }
 QT_END_NAMESPACE
@@ -25,6 +28,8 @@ private slots:
     void on_pushButton_6_pressed();
 
     void on_pushButton_2_pressed();
+
+    void on_pushButton_3_clicked();
 
 private:
     Ui::splash *ui;

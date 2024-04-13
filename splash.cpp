@@ -1,6 +1,9 @@
 #include "splash.h"
 #include "ui_splash.h"
 #include "QPushButton"
+#include "login.h"
+
+QString ID = "Abeh", PhoneNumber = "123";
 
 bool swText1 = true ,swText2 = true ,swText3 = true;
 
@@ -69,5 +72,13 @@ void splash::on_pushButton_6_pressed()
 void splash::on_pushButton_2_pressed()
 {
 
+}
+
+
+void splash::on_pushButton_3_clicked()
+{
+    login *pg2 = new login;
+    pg2->show();
+    this->close();
 }
 

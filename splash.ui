@@ -23,7 +23,7 @@
    <string notr="true">background-color: rgb(255, 255, 255);
 background-color: qlineargradient(spread:pad, x1:0.514, y1:0.403318, x2:1, y2:0.994, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(199, 76, 221, 255));</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0,0">
    <item row="5" column="1">
     <spacer name="horizontalSpacer_12">
      <property name="orientation">
@@ -97,7 +97,7 @@ background-color: rgb(255, 0, 4);
 border-radius: 15px;</string>
      </property>
      <property name="text">
-      <string>Press the exit button👌</string>
+      <string>   Press the exit button👌</string>
      </property>
     </widget>
    </item>
