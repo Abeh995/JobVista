@@ -14,7 +14,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(0, 0, 0);</string>
+   <string notr="true">background-color: qconicalgradient(cx:0, cy:0, angle:135, stop:0 rgba(0, 0, 0, 69), stop:0.375 rgba(0, 0, 0, 69), stop:0.412429 rgba(221, 0, 255, 200), stop:0.423533 rgba(0, 0, 0, 145), stop:0.45 rgba(207, 0, 241, 208), stop:0.477581 rgba(0, 0, 0, 130), stop:0.482955 rgba(0, 0, 0, 145), stop:0.502825 rgba(156, 0, 182, 208), stop:0.518717 rgba(0, 0, 0, 130), stop:0.55 rgba(153, 0, 187, 255), stop:0.57754 rgba(0, 0, 0, 130), stop:0.59322 rgba(159, 0, 185, 208), stop:0.625 rgba(0, 0, 0, 69), stop:1 rgba(0, 0, 0, 69));</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="2">
@@ -108,6 +108,9 @@ color: rgb(0, 0, 0);</string>
           <pointsize>9</pointsize>
          </font>
         </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));</string>
+        </property>
         <property name="text">
          <string>New to JobVista ?</string>
         </property>
@@ -180,8 +183,14 @@ color: rgb(0, 0, 0);</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: rgb(21, 0, 255);
-color: rgb(255, 255, 255);</string>
+           <string notr="true">QPushButton{
+	background-color: rgb(21, 0, 255);
+color: rgb(255, 255, 255);
+}
+QPushButton:hover{
+	
+	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 rgba(0, 0, 0, 56), stop:1 rgba(139, 255, 120, 255));
+}</string>
           </property>
           <property name="text">
            <string>Register</string>
@@ -190,6 +199,9 @@ color: rgb(255, 255, 255);</string>
         </item>
         <item>
          <widget class="QLabel" name="label_5">
+          <property name="styleSheet">
+           <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0));</string>
+          </property>
           <property name="text">
            <string>now</string>
           </property>
@@ -272,6 +284,16 @@ color: rgb(255, 0, 127);</string>
           <width>0</width>
           <height>42</height>
          </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton:hover{
+	background-color: qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 rgba(0, 0, 0, 56), stop:1 rgba(120, 255, 244, 255));
+}
+QPushButton{
+	
+	background-color: rgb(31, 168, 7);
+	border-radius: 15px;
+}</string>
         </property>
         <property name="text">
          <string>Sign in</string>

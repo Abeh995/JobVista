@@ -15,9 +15,13 @@ class login : public QWidget
 public:
     explicit login(QWidget *parent = nullptr);
     ~login();
-
+protected:
+    void keyPressEvent(QKeyEvent *event);
 private slots:
     void on_pushButton_2_clicked();
+
+    void on_pushButton_clicked();
+    void handleKeyPress(QKeyEvent *event);
 
 private:
     Ui::login *ui;

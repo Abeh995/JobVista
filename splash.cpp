@@ -1,7 +1,9 @@
 #include "splash.h"
 #include "ui_splash.h"
-#include "QPushButton"
 #include "login.h"
+
+#include "QPushButton"
+#include "QKeyEvent"
 
 QString ID = "Abeh", PhoneNumber = "123";
 
@@ -12,6 +14,11 @@ splash::splash(QWidget *parent)
     , ui(new Ui::splash)
 {
     ui->setupUi(this);
+
+    ui->pushButton_3->setFocus();
+    ui->pushButton_3->setDefault(true);
+    ui->pushButton_3->setAutoDefault(false);
+
     ui->textBrowser->hide();
     ui->textBrowser_2->hide();
     ui->textBrowser_3->hide();
@@ -24,6 +31,23 @@ splash::splash(QWidget *parent)
 splash::~splash()
 {
     delete ui;
+}
+
+void splash::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape)
+       {
+                handleKeyPress(event);
+       }
+       else
+       {
+           QWidget::keyPressEvent(event);
+    }
+}
+
+void splash::handleKeyPress(QKeyEvent *event)
+{
+    this->close();
 }
 
 

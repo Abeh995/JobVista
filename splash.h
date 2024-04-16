@@ -17,9 +17,11 @@ class splash : public QWidget
 public:
     splash(QWidget *parent = nullptr);
     ~splash();
-
+protected:
+    void keyPressEvent(QKeyEvent *event);
 private slots:
 
+    void handleKeyPress(QKeyEvent *event);
 
     void on_pushButton_4_pressed();
 

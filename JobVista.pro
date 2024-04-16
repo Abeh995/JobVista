@@ -11,14 +11,17 @@ CONFIG += c++11
 SOURCES += \
     login.cpp \
     main.cpp \
+    signup.cpp \
     splash.cpp
 
 HEADERS += \
     login.h \
+    signup.h \
     splash.h
 
 FORMS += \
     login.ui \
+    signup.ui \
     splash.ui
 
 # Default rules for deployment.

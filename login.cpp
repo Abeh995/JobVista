@@ -1,13 +1,15 @@
 #include "login.h"
 #include "ui_login.h"
 #include "splash.h"
+#include "signup.h"
+
 #include <QMessageBox>
+#include <QKeyEvent>
 
 #include <QSqlDatabase>
 #include <QSqlDriver>
 #include <QSqlQuery>
 #include <QSqlQueryModel>
-
 
 login::login(QWidget *parent) :
     QWidget(parent),
@@ -15,14 +17,9 @@ login::login(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QSqlDatabase databse;
-    databse = QSqlDatabase::addDatabase("QSQLITE");
-    databse.setDatabaseName("d:\\JobVista\\Users.db");
-    databse.open();
-
     setWindowTitle("login");
     animation = new QPropertyAnimation(ui->groupBox, "geometry");
-    animation->setDuration(2000);
+    animation->setDuration(550);
     animation->setStartValue(ui->groupBox->geometry());
     animation->setEndValue(QRect(400, 10, 450, 600));
     animation->start();
@@ -31,6 +28,18 @@ login::login(QWidget *parent) :
 login::~login()
 {
     delete ui;
+}
+
+void login::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape)
+       {
+           handleKeyPress(event);
+       }
+       else
+       {
+           QWidget::keyPressEvent(event);
+       }
 }
 
 void login::on_pushButton_2_clicked()
@@ -58,5 +67,20 @@ void login::on_pushButton_2_clicked()
         else{
             QMessageBox::information(this,"Fill Form","Please FILL FORM and try again!");
         }
+}
+
+
+void login::on_pushButton_clicked()
+{
+    signup *SP =new signup;
+    SP->show();
+    this->close();
+}
+
+void login::handleKeyPress(QKeyEvent *event)
+{
+    splash *sp=new splash;
+    sp->show();
+    this->close();
 }
 
