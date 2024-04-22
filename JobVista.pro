@@ -12,17 +12,20 @@ SOURCES += \
     login.cpp \
     main.cpp \
     signup.cpp \
-    splash.cpp
+    splash.cpp \
+    verification.cpp
 
 HEADERS += \
     login.h \
     signup.h \
-    splash.h
+    splash.h \
+    verification.h
 
 FORMS += \
     login.ui \
     signup.ui \
-    splash.ui
+    splash.ui \
+    verification.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
