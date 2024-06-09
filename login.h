@@ -23,6 +23,10 @@ private slots:
     void on_pushButton_clicked();
     void handleKeyPress(QKeyEvent *event);
 
+    void on_pushButton_3_pressed();
+
+    void on_pushButton_3_released();
+
 private:
     Ui::login *ui;
     QPropertyAnimation *animation;

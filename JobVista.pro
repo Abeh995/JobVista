@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    home.cpp \
     login.cpp \
     main.cpp \
     signup.cpp \
@@ -16,12 +17,14 @@ SOURCES += \
     verification.cpp
 
 HEADERS += \
+    home.h \
     login.h \
     signup.h \
     splash.h \
     verification.h
 
 FORMS += \
+    home.ui \
     login.ui \
     signup.ui \
     splash.ui \

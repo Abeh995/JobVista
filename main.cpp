@@ -1,5 +1,5 @@
 #include "splash.h"
-
+#include "home.h"
 #include <QApplication>
 
 #include <QSqlDatabase>
@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     databse = QSqlDatabase::addDatabase("QSQLITE");
     databse.setDatabaseName("d:\\JobVista\\Users.db");
     databse.open();
-    splash w;
+    home w;
     w.show();
     return a.exec();
 }

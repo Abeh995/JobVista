@@ -2,6 +2,8 @@
 #include "ui_splash.h"
 #include "login.h"
 #include "verification.h"
+#include "home.h"
+
 #include "QPushButton"
 #include "QKeyEvent"
 
@@ -101,7 +103,7 @@ void splash::on_pushButton_2_pressed()
 
 void splash::on_pushButton_3_clicked()
 {
-    verification *pg2 = new verification;
+    login *pg2 = new login;
     pg2->show();
     this->close();
 }
