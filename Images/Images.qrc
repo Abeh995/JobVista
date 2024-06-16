@@ -5,5 +5,7 @@
     </qresource>
     <qresource prefix="/icon">
         <file>icon-logo.png</file>
+        <file>icon-change-profile-photo.png</file>
+        <file>icon-change-profile-photo-2.png</file>
     </qresource>
 </RCC>
