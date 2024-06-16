@@ -12,6 +12,7 @@ SOURCES += \
     home.cpp \
     login.cpp \
     main.cpp \
+    profile.cpp \
     signup.cpp \
     splash.cpp \
     verification.cpp
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     home.h \
     login.h \
+    profile.h \
     signup.h \
     splash.h \
     verification.h
@@ -26,6 +28,7 @@ HEADERS += \
 FORMS += \
     home.ui \
     login.ui \
+    profile.ui \
     signup.ui \
     splash.ui \
     verification.ui
