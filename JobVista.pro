@@ -1,4 +1,7 @@
-QT       += core gui sql
+QT       += core gui sql \
+    quick \
+    widgets multimedia\
+    multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,6 +12,8 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    basicclasses.cpp \
+    createpost.cpp \
     home.cpp \
     login.cpp \
     main.cpp \
@@ -18,6 +23,8 @@ SOURCES += \
     verification.cpp
 
 HEADERS += \
+    basicclasses.h \
+    createpost.h \
     home.h \
     login.h \
     profile.h \
@@ -26,6 +33,7 @@ HEADERS += \
     verification.h
 
 FORMS += \
+    createpost.ui \
     home.ui \
     login.ui \
     profile.ui \

@@ -22,6 +22,8 @@ profile::profile(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setWindowTitle("Set Profile");
+
     // check the user's information & get the window ready
     QSqlQuery q;
     q.prepare("SELECT profilePhoto FROM Users WHERE id = :id");
@@ -219,7 +221,7 @@ void profile::on_changeProfile_pushButton_clicked()
     }
 
     QSqlQuery q;
-    q.prepare("UPDATE Users SET profilePhoto = :photo WHERE id = :id");
+    q.prepare("UPDATE Users SET profilePhoto =  :photo WHERE id = :id");
     QFile file(filePath);
     if(file.open(QIODevice::ReadOnly)){
         QByteArray imageData = file.readAll();

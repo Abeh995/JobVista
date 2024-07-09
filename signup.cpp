@@ -36,6 +36,7 @@ signup::signup(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setWindowTitle("Signup");
     GenCaptcha();
     QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity");
     animation->setDuration(700);

@@ -21,7 +21,7 @@ login::login(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowTitle("login");
+    setWindowTitle("Login");
     animation = new QPropertyAnimation(ui->groupBox, "geometry");
     animation->setDuration(550);
     animation->setStartValue(ui->groupBox->geometry());

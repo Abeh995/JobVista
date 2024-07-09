@@ -1,5 +1,6 @@
 #include "splash.h"
 #include "home.h"
+#include "createpost.h"
 #include <QApplication>
 
 #include <QSqlDatabase>
@@ -10,6 +11,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setWindowIcon(QIcon(":/icon/icon-logo.png"));
+
     QSqlDatabase databse;
     databse = QSqlDatabase::addDatabase("QSQLITE");
     databse.setDatabaseName("d:\\JobVista\\Users.db");

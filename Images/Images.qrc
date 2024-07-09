@@ -7,5 +7,9 @@
         <file>icon-logo.png</file>
         <file>icon-change-profile-photo.png</file>
         <file>icon-change-profile-photo-2.png</file>
+        <file>icon-liked.png</file>
+        <file>icon-unliked.png</file>
+        <file>icon-comment.png</file>
+        <file>icon-refresh.png</file>
     </qresource>
 </RCC>

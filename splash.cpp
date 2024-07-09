@@ -17,6 +17,7 @@ splash::splash(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setWindowTitle("Splash");
     ui->pushButton_3->setFocus();
     ui->pushButton_3->setDefault(true);
     ui->pushButton_3->setAutoDefault(false);
