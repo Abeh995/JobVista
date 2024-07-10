@@ -1,5 +1,6 @@
 #include "login.h"
 #include "ui_login.h"
+#include"basicclasses.h"
 #include "splash.h"
 #include "signup.h"
 #include "home.h"

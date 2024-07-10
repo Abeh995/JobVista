@@ -1,4 +1,9 @@
-#include "basicClasses.h"
+#include"basicclasses.h"
+
+QString ID = "Abeh", PhoneNumber = "123";
+QString postSenderID = "Abeh";
+QString postID = "22";
+QString viewProfile = "Abeh";
 
 //// Person class function implementation
 //void Person::Take_Job(Job* job) {

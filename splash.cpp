@@ -1,13 +1,12 @@
 #include "splash.h"
 #include "ui_splash.h"
+#include"basicclasses.h"
 #include "login.h"
 #include "verification.h"
 #include "home.h"
 
 #include "QPushButton"
 #include "QKeyEvent"
-
-QString ID = "Abeh", PhoneNumber = "123";
 
 bool swText1 = true ,swText2 = true ,swText3 = true;
 

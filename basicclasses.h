@@ -5,6 +5,12 @@
 #include <QDateTime>
 #include <QList>
 
+extern QString ID;
+extern QString PhoneNumber;
+extern QString postSenderID;
+extern QString postID;
+extern QString viewProfile;
+
 // Forward Declarations
 class Time;
 class Post;
@@ -61,6 +67,7 @@ public:
 class Like {
 public:
     QString id;
+    QByteArray profilePhoto;
     QString likeId;
     QString senderId;
     QString postId;

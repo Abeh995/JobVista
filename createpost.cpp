@@ -1,5 +1,6 @@
 #include "createpost.h"
 #include "ui_createpost.h"
+#include"basicclasses.h"
 #include"splash.h"
 
 #include <QLabel>

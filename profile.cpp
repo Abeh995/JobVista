@@ -1,5 +1,6 @@
 #include "profile.h"
 #include "ui_profile.h"
+#include"basicclasses.h"
 #include "splash.h"
 #include "verification.h"
 #include "home.h"

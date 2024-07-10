@@ -1,5 +1,6 @@
 #include "verification.h"
 #include "ui_verification.h"
+#include"basicclasses.h"
 #include "signup.h"
 #include "splash.h"
 

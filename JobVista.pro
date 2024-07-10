@@ -20,7 +20,8 @@ SOURCES += \
     profile.cpp \
     signup.cpp \
     splash.cpp \
-    verification.cpp
+    verification.cpp \
+    wholiked.cpp
 
 HEADERS += \
     basicclasses.h \
@@ -30,7 +31,8 @@ HEADERS += \
     profile.h \
     signup.h \
     splash.h \
-    verification.h
+    verification.h \
+    wholiked.h
 
 FORMS += \
     createpost.ui \
@@ -39,7 +41,8 @@ FORMS += \
     profile.ui \
     signup.ui \
     splash.ui \
-    verification.ui
+    verification.ui \
+    wholiked.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

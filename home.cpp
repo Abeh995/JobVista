@@ -33,9 +33,6 @@
 QVector<Post> posts;
 
 int i=0;
-//my net:
-
-bool isLiked2= false;
 
 home::home(QWidget *parent) :
     QWidget(parent),
@@ -271,48 +268,76 @@ void home::generatePost(QGridLayout *scrollLayout)
         react_groupBox->setLayout(react_groupBoxLayout);
 
         QPushButton* likePushButton = new QPushButton;
-        likePushButton->setObjectName(QString("likePushButton-%1").arg(i));
+//        likePushButton->setObjectName(QString("likePushButton-%1").arg(i));
         QFont font2("MS Shell Dlg 2", 23);
         likePushButton->setMaximumWidth(60);
         //likePushButton->setMinimumSize(0, 40);
         likePushButton->setFont(font2);
-        likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
+//        likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
         react_groupBoxLayout->addWidget(likePushButton);
-        likePushButton->setObjectName(QString::number(i));
 
-        QObject::connect(likePushButton, &QPushButton::clicked, [=](){
+        // check post is liked
+        QSqlQuery query;
+        query.prepare("SELECT * FROM Likes WHERE id = :id AND senderId = :senderid AND postId = :postid");
+        query.bindValue(":id",ID);
+        query.bindValue(":senderid", posts[i].id);
+        query.bindValue(":postid", posts[i].postId);
+
+        if (!query.exec()) {
+            qDebug() << "Query execution failed: " << query.lastError();
+        }
+
+        if(query.next()){
+            likePushButton->setStyleSheet("image: url(:/icon/icon-liked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
+        } else{
+            likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
+        }
+
+        likePushButton->setObjectName(QString::number(i));
+        QObject::connect(likePushButton, &QPushButton::clicked, [=]() mutable {
             int k=likePushButton->objectName().toInt();
-            isLiked2=!isLiked2;
-            //unique ...
-            if(isLiked2){
-                qDebug()<< "after posts are generated, the -i- variable is 10 and it is not what i want  ! HELP ME!"<<getTime()<<"---"<<posts[k].id;
+            QSqlQuery query;
+            query.prepare("SELECT * FROM Likes WHERE id = :id AND senderId = :senderid AND postId = :postid");
+            query.bindValue(":id", ID);
+            query.bindValue(":senderid", posts[k].id);
+            query.bindValue(":postid", posts[k].postId);
+
+            // Execute the query
+            if (!query.exec()) {
+                qDebug() << "Query execution failed: " << query.lastError();
+            }
+
+            // Check if any results were returned
+            if (query.next()) {
+                // Record exists, delete it
+                QSqlQuery deleteQuery;
+                deleteQuery.prepare("DELETE FROM Likes WHERE id = :id AND senderId = :senderid AND postId = :postid");
+                deleteQuery.bindValue(":id", ID);
+                deleteQuery.bindValue(":senderid", posts[k].id);
+                deleteQuery.bindValue(":postid", posts[k].postId);
+
+                if (!deleteQuery.exec()) {
+                    qDebug() << "Delete query execution failed: " << deleteQuery.lastError();
+                }
+
+                // Update the button style to "unliked"
+                likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
+            } else {
+                // Record does not exist, insert it
+                QSqlQuery insertQuery;
+                insertQuery.prepare("INSERT INTO Likes (id, senderId, postId ,time) VALUES (:id, :senderid, :postid, :time)");
+                insertQuery.bindValue(":id", ID);
+                insertQuery.bindValue(":senderid", posts[k].id);
+                insertQuery.bindValue(":postid", posts[k].postId);
+                insertQuery.bindValue(":time", getTime());
+
+                if (!insertQuery.exec()) {
+                    qDebug() << "Insert query execution failed: " << insertQuery.lastError();
+                }
+
+                // Update the button style to "liked"
                 likePushButton->setStyleSheet("image: url(:/icon/icon-liked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
             }
-            else{
-                QSqlQuery q2;
-
-                            qDebug() << "Preparing the INSERT query...";
-                            if (!q2.prepare("INSERT INTO Likes (id, senderId, postId, time) VALUES (:id, :senderId, :postId, :time)")) {
-                                qDebug() << "Failed to prepare insert query:" << q2.lastError().text();
-                                return;
-                            }
-                            q2.bindValue(":id",ID);
-                            q2.bindValue(":senderId", posts[k].id);
-                            q2.bindValue(":postId", posts[k].postId);
-                            q2.bindValue(":time", getTime());
-
-
-                            qDebug() << "Executing the INSERT query...";
-                            if (!q2.exec()) {
-                                qDebug() << "Failed to insert like:" << q2.lastError().text();
-                                return;
-                            }
-
-
-
-                likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
-            }
-
         });
 
         QPushButton* commentPushButton = new QPushButton;
