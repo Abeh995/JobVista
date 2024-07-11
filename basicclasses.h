@@ -9,7 +9,9 @@ extern QString ID;
 extern QString PhoneNumber;
 extern QString postSenderID;
 extern QString postID;
-extern QString viewProfile;
+extern QString viewProfileID;
+
+QString getTime();
 
 // Forward Declarations
 class Time;
@@ -52,6 +54,7 @@ public:
     QString LCR_counter;
     QString tag;
     QString seen;
+    QString rePosted;
     QList<Like> likes;
     QList<Comment> comments;
 };
@@ -81,6 +84,9 @@ public:
     QString recieverId ;
 };
 
+
+
+
 // Forward declarations
 class Job;
 class Person;
@@ -89,11 +95,13 @@ class Account {
 public:
     // Other member functions here...
     QString id;
+    QByteArray profilePhoto;
     QString PhoneNumber;
     QString email;
+    int connection_counter;
     QVector<Account*> Connection;
-    QVector<Account*> Following;
-    QVector<QString> UsersPosts; // Assuming post is represented as QString for simplicity
+    QString Following;
+    QVector<Post> UsersPosts; // Assuming post is represented as QString for simplicity
     QVector<QString> DirectMessage;    // Assuming message is represented as QString for simplicity
 };
 
@@ -107,7 +115,8 @@ public:
 
     QString name;
     QString lastName;
-    QVector<QString> Skill;
+    QString Skill;
+    QString college;
 };
 
 class Job {
@@ -136,10 +145,12 @@ public:
     }
 
     // Other member functions here...
-    QVector<Job*> Company_Jobs;
     QString Company_Name;
+    QString occupation;
+    QString address;
+    QString Followers;
+    QVector<Job*> Company_Jobs;
     QVector<Person*> Employee;
-    QVector<Account*> Followers;
 };
 
 //void Person::Take_Job(Job* job) {

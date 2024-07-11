@@ -3,6 +3,7 @@
 #include"basicclasses.h"
 #include "createpost.h"
 #include "wholiked.h"
+#include"viewprofile.h"
 
 #include <QApplication>
 
@@ -20,7 +21,7 @@ int main(int argc, char *argv[])
     databse = QSqlDatabase::addDatabase("QSQLITE");
     databse.setDatabaseName("d:\\JobVista\\Users.db");
     databse.open();
-    wholiked w;
+    viewprofile w;
     w.show();
     return a.exec();
 }

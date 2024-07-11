@@ -21,6 +21,7 @@ SOURCES += \
     signup.cpp \
     splash.cpp \
     verification.cpp \
+    viewprofile.cpp \
     wholiked.cpp
 
 HEADERS += \
@@ -32,6 +33,7 @@ HEADERS += \
     signup.h \
     splash.h \
     verification.h \
+    viewprofile.h \
     wholiked.h
 
 FORMS += \
@@ -42,6 +44,7 @@ FORMS += \
     signup.ui \
     splash.ui \
     verification.ui \
+    viewprofile.ui \
     wholiked.ui
 
 # Default rules for deployment.
