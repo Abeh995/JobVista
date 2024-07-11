@@ -289,6 +289,7 @@ void createPost::on_post_pushButton_clicked()
     q.exec("UPDATE Posts SET likersId  ='"+QString("")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET comments  ='"+QString("")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET LCR_counter  ='"+mmd+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
+    q.exec("UPDATE Posts SET rePostId  ='"+QString("empty")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET time  ='"+timeString+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
 //    qint64 timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
 //    QString qstr=QString("UPDATE Posts SET time  = %1 WHERE id= %2 AND postId = %3 ").arg(timestamp).arg(ID).arg(newPostId);
@@ -306,7 +307,7 @@ void createPost::on_post_pushButton_clicked()
     if(sw2 == "mp4" || sw2 == "mkv"){
         mediaPlayer->stop();
     }
-    this->close();
+//    this->close();
 }
 
 void createPost::closeEvent(QCloseEvent *event)

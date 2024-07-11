@@ -31,7 +31,7 @@ wholiked::wholiked(QWidget *parent) :
 
     QSqlQuery q;
     q.prepare("SELECT * FROM Likes WHERE senderId = :senderid AND postId = :postid  ORDER BY time DESC");
-    q.bindValue(":senderid", "Abeh");
+    q.bindValue(":senderid", postSenderID);
     q.bindValue(":postid", postID);
     if(!q.exec()){
         qDebug() << "Error: failed to execute query -" << q.lastError();
@@ -116,7 +116,7 @@ wholiked::wholiked(QWidget *parent) :
         id_pushButton->setObjectName(QString::number(i));
         QObject::connect(id_pushButton, &QPushButton::clicked, [=]() mutable {
             int k=id_pushButton->objectName().toInt();
-            viewProfile=likers[k].id;
+            viewProfileID=likers[k].id;
             //////////////////////////////////////////////////////////////////////////// show VIEW PROFILE ///////////////////////////////////
 //            this->close();
         });

@@ -5,6 +5,7 @@
 #include <createpost.h>
 #include<ui_createpost.h>
 #include "createpost.h"
+#include "wholiked.h"
 
 #include <QApplication>
 #include <QTabWidget>
@@ -251,6 +252,14 @@ void home::generatePost(QGridLayout *scrollLayout)
         whoLikedPushButton->setMaximumSize(150, 30);
         whoLikedPushButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius:10px;");
         counter_groupBoxLayout->addWidget(whoLikedPushButton);
+        whoLikedPushButton->setObjectName(QString::number(i));
+        QObject::connect(whoLikedPushButton, &QPushButton::clicked, [=]() mutable {
+            int k=whoLikedPushButton->objectName().toInt();
+            postSenderID = posts[k].id;
+            postID = posts[k].postId;
+            wholiked * window=new wholiked;
+            window->show();
+        });
 
         QSpacerItem* counter_horizontalSpacer = new QSpacerItem(180, 20, QSizePolicy::Preferred, QSizePolicy::Fixed);
         counter_groupBoxLayout->addSpacerItem(counter_horizontalSpacer);
@@ -319,6 +328,7 @@ void home::generatePost(QGridLayout *scrollLayout)
                 if (!deleteQuery.exec()) {
                     qDebug() << "Delete query execution failed: " << deleteQuery.lastError();
                 }
+
 
                 // Update the button style to "unliked"
                 likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");

@@ -11,5 +11,10 @@
         <file>icon-unliked.png</file>
         <file>icon-comment.png</file>
         <file>icon-refresh.png</file>
+        <file>icon-liked-2.png</file>
+        <file>icon-repost.png</file>
+        <file>icon-send.png</file>
+        <file>icon-send-2.png</file>
+        <file>icon-unliked-2.png</file>
     </qresource>
 </RCC>
