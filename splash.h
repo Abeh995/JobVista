@@ -5,6 +5,8 @@
 
 extern QString ID;
 extern QString PhoneNumber;
+extern QString postSenderID;
+extern QString postID;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class splash; }

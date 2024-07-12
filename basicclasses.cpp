@@ -1,5 +1,10 @@
 #include "basicClasses.h"
 
+QString postType;
+QString CM_name;
+
+
+
 //// Person class function implementation
 //void Person::Take_Job(Job* job) {
 //    // Implement the logic for taking a job here

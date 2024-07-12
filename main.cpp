@@ -1,7 +1,9 @@
 #include "splash.h"
 #include "home.h"
 #include "createpost.h"
+#include "comments.h"
 #include <QApplication>
+#include "createjob.h"
 
 #include <QSqlDatabase>
 #include <QSqlDriver>

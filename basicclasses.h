@@ -5,6 +5,11 @@
 #include <QDateTime>
 #include <QList>
 
+extern QString postType;
+extern QString CM_name;
+
+
+
 // Forward Declarations
 class Time;
 class Post;
@@ -53,6 +58,7 @@ public:
 // Comment class
 class Comment : public Content {
 public:
+    QByteArray profilePhoto;
     QString postId;
     QString commentId;
 };
@@ -105,35 +111,38 @@ public:
 
 class Job {
 public:
-    Job(const QString& jobName, const QString& companyName, const QVector<QString>& skillsRequired, const QString& workplaceType, const QString& location, const QString& type, QString salary)
-        : Job_Name(jobName), Company_Name(companyName), Skills_Required(skillsRequired), WorkPlace_Type(workplaceType), Location(location), Type(type), Salary(salary) {}
+//    Job(const QString& jobName, const QString& companyName, const QVector<QString>& skillsRequired, const QString& workplaceType, const QString& location, const QString& type, QString salary)
+//        : Job_Name(jobName), Company_Name(companyName), Skills_Required(skillsRequired), WorkPlace_Type(workplaceType), Location(location), Type(type), Salary(salary) {}
 
     // Other member functions here...
-
+    QString id;
+    QString jobId;
+    QString requests;
+    QString req_results;
     QString Job_Name;
     QString Company_Name;
-    QVector<QString> Skills_Required;
+    QString Skills_Required;
     QString WorkPlace_Type;
     QString Location;
     QString Type;
     QString Salary;
 };
 
-class Company : public Account {
-public:
+//class Company : public Account {
+//public:
 
-    Job* Create_Job(const QString& jobName, const QVector<QString>& skillsRequired, const QString& workplaceType, const QString& location, const QString& type, QString salary) {
-        Job* job = new Job(jobName, Company_Name, skillsRequired, workplaceType, location, type, salary);
-        Company_Jobs.append(job);
-        return job;
-    }
+////    Job* Create_Job(const QString& jobName, const QVector<QString>& skillsRequired, const QString& workplaceType, const QString& location, const QString& type, QString salary) {
+////        Job* job = new Job(jobName, Company_Name, skillsRequired, workplaceType, location, type, salary);
+////        Company_Jobs.append(job);
+////        return job;
+//    }
 
-    // Other member functions here...
-    QVector<Job*> Company_Jobs;
-    QString Company_Name;
-    QVector<Person*> Employee;
-    QVector<Account*> Followers;
-};
+//    // Other member functions here...
+//    QVector<Job*> Company_Jobs;
+//    QString Company_Name;
+//    QVector<Person*> Employee;
+//    QVector<Account*> Followers;
+//};
 
 //void Person::Take_Job(Job* job) {
 //    // Implement the logic for a person taking a job

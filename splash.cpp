@@ -8,6 +8,8 @@
 #include "QKeyEvent"
 
 QString ID = "Abeh", PhoneNumber = "123";
+QString postSenderID;
+QString postID;
 
 bool swText1 = true ,swText2 = true ,swText3 = true;
 
