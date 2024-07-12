@@ -4,6 +4,7 @@
 #include "splash.h"
 #include "verification.h"
 #include "home.h"
+#include "basicclasses.h"
 #include "QTimer"
 #include "QMessageBox"
 #include "QDebug"
@@ -277,11 +278,14 @@ void profile::on_save_pushButton_clicked()
         q.exec("UPDATE Users SET birthDate='"+ui->monthOfBirth_comboBox->currentText()+"/"+ui->dayOfBirth_comboBox->currentText()+"/"+ui->yearOfBirth_comboBox->currentText()+"' WHERE id='"+ID+"'");
         q.exec("UPDATE Users SET post='"+ui->typeOfPost_comboBox->currentText()+"' WHERE id='"+ID+"'");
         if(ui->typeOfPost_comboBox->currentText() == "Employer"){
+            CM_name = ui->companyName_lineEdit->text();
+            postType = "Employer";
             q.exec("UPDATE Users SET CM_name='"+ui->companyName_lineEdit->text()+"' WHERE id='"+ID+"'");
             q.exec("UPDATE Users SET CM_address='"+ui->companyAddress_lineEdit->text()+"' WHERE id='"+ID+"'");
             q.exec("UPDATE Users SET CM_occupation='"+ui->fieldOfOccupation_comboBox->currentText()+"' WHERE id='"+ID+"'");
         }
         else{// Job Seeker
+            postType = "Job seeker";
             q.exec("UPDATE Users SET JS_college='"+ui->nameOfCollege_lineEdit->text()+"' WHERE id='"+ID+"'");
             q.exec("UPDATE Users SET JS_intended_J='"+ui->intendedJob_comboBox->currentText()+"' WHERE id='"+ID+"'");
             q.exec("UPDATE Users SET JS_intended_C='"+ui->intendedCompany_comboBox->currentText()+"' WHERE id='"+ID+"'");

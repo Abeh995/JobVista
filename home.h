@@ -21,8 +21,11 @@ public:
 private slots:
     void on_createPost_pushButton_clicked();
 
+    void on_createJob_pushButton_clicked();
+
 public slots:
     void generatePost(QGridLayout *scrollLayout);
+    void generateJob(QGridLayout *job_scrollLayout);
 
     QString getTime();
 private:

@@ -2,10 +2,12 @@
 #include "home.h"
 #include"basicclasses.h"
 #include "createpost.h"
+
 #include "wholiked.h"
 #include"viewprofile.h"
-
+#include "comments.h"
 #include <QApplication>
+#include "createjob.h"
 
 #include <QSqlDatabase>
 #include <QSqlDriver>
@@ -21,7 +23,7 @@ int main(int argc, char *argv[])
     databse = QSqlDatabase::addDatabase("QSQLITE");
     databse.setDatabaseName("d:\\JobVista\\Users.db");
     databse.open();
-    viewprofile w;
+    home w;
     w.show();
     return a.exec();
 }

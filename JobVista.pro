@@ -13,6 +13,8 @@ CONFIG += c++11
 
 SOURCES += \
     basicclasses.cpp \
+    comments.cpp \
+    createjob.cpp \
     createpost.cpp \
     home.cpp \
     login.cpp \
@@ -26,6 +28,8 @@ SOURCES += \
 
 HEADERS += \
     basicclasses.h \
+    comments.h \
+    createjob.h \
     createpost.h \
     home.h \
     login.h \
@@ -37,6 +41,8 @@ HEADERS += \
     wholiked.h
 
 FORMS += \
+    comments.ui \
+    createjob.ui \
     createpost.ui \
     home.ui \
     login.ui \

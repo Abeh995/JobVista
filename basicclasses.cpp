@@ -1,5 +1,6 @@
 #include"basicclasses.h"
 
+
 QString ID = "Abeh", PhoneNumber = "123";
 QString postSenderID = "Abeh";
 QString postID = "22";
@@ -28,6 +29,11 @@ QString getTime(){
         return timeString;
 
 }
+
+QString postType;
+QString CM_name;
+
+
 //// Person class function implementation
 //void Person::Take_Job(Job* job) {
 //    // Implement the logic for taking a job here
