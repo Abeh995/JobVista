@@ -11,6 +11,7 @@ extern QString PhoneNumber;
 extern QString postSenderID;
 extern QString postID;
 extern QString viewProfileID;
+extern QString intendedJob;
 
 QString getTime();
 
@@ -107,7 +108,9 @@ public:
     QString PhoneNumber;
     QString email;
     int connection_counter;
-    QVector<Account*> Connection;
+    QStringList Connection;
+    QStringList requests;
+    QStringList suggests;
     QString Following;
     QVector<Post> UsersPosts; // Assuming post is represented as QString for simplicity
     QVector<QString> DirectMessage;    // Assuming message is represented as QString for simplicity

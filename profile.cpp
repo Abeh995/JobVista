@@ -85,13 +85,16 @@ profile::profile(QWidget *parent) :
     }
     q.exec("SELECT birthDate FROM Users WHERE id='"+ID+"'");
     if(q.first()){
-        QStringList dateParts = q.value(0).toString().split('/');
-        ui->monthOfBirth_comboBox->setCurrentText(dateParts[0]);
-        ui->dayOfBirth_comboBox->setCurrentText(dateParts[1]);
-        //ui->id_label->setText(dateParts[2]);
-        // not Working correctly:
-        ui->yearOfBirth_comboBox->setCurrentText(dateParts[2]);
-        // can you fix that? :)
+        if(q.value(0).toString()!=NULL){
+
+            QStringList dateParts = q.value(0).toString().split('/');
+            ui->monthOfBirth_comboBox->setCurrentText(dateParts[0]);
+            ui->dayOfBirth_comboBox->setCurrentText(dateParts[1]);
+            //ui->id_label->setText(dateParts[2]);
+            // not Working correctly:
+            ui->yearOfBirth_comboBox->setCurrentText(dateParts[2]);
+            // can you fix that? :)
+        }
     }
     ui->liveAgeShower_label->setNum(2024-ui->yearOfBirth_comboBox->currentText().toInt());
     q.exec("SELECT post FROM Users WHERE id='"+ID+"'");

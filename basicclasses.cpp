@@ -1,10 +1,11 @@
 #include"basicclasses.h"
 
 
-QString ID = "Abeh", PhoneNumber = "123";
+QString ID = "hooman", PhoneNumber = "123";
 QString postSenderID = "Abeh";
 QString postID = "22";
 QString viewProfileID = "Abeh";
+QString intendedJob = "Information Technology";
 
 QString getTime(){
 

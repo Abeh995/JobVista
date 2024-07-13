@@ -5,6 +5,7 @@
 #include <createpost.h>
 #include<ui_createpost.h>
 #include "createpost.h"
+#include"profile.h"
 
 #include "wholiked.h"
 
@@ -31,6 +32,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QString>
+#include <QShortcut>
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -41,10 +43,11 @@ QVector<Post> posts;
 QVector<Job> jobs;
 
 int i=0;
-
-
 int z=0;
+int t=0;
+int r=0;
 bool isLiked2= false;
+bool darkTheme =true;
 
 
 home::home(QWidget *parent) :
@@ -54,6 +57,10 @@ home::home(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Home");
+    ui->tabWidget->setCurrentIndex(0);
+     QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+T"), this);
+     connect(shortcut, &QShortcut::activated, this, &home::changeTheme);
+     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &home::onTabChanged);
 
     QWidget* scrollWidget = new QWidget;
     QGridLayout* scrollLayout = new QGridLayout(scrollWidget);
@@ -65,8 +72,20 @@ home::home(QWidget *parent) :
     scrollWidget2->setLayout(job_scrollLayout);
     ui->job_scrollArea->setWidget(scrollWidget2);
 
+    QWidget* scrollWidget3 = new QWidget;
+    QGridLayout* network1_scrollLayout = new QGridLayout(scrollWidget);
+    scrollWidget3->setLayout(network1_scrollLayout);
+    ui->network1_scrollArea->setWidget(scrollWidget3);
+
+    QWidget* scrollWidget4 = new QWidget;
+    QGridLayout* network2_scrollLayout = new QGridLayout(scrollWidget);
+    scrollWidget4->setLayout(network2_scrollLayout);
+    ui->network2_scrollArea->setWidget(scrollWidget4);
+
     generatePost(scrollLayout);
     generateJob(job_scrollLayout);
+    generateNetwork1(network1_scrollLayout);
+    generateNetwork2(network2_scrollLayout);
 
 }
 
@@ -196,6 +215,79 @@ void home::generatePost(QGridLayout *scrollLayout)
 
         post_groupBoxLayout->addWidget(info_groupBox);
 
+        QSqlQuery q;
+        if(q.exec("SELECT connections FROM Users WHERE id = '"+ID+"'")){
+            if(q.next()){
+                QStringList connections = q.value(0).toString().split('/');
+                if(connections.contains(posts[i].id)){
+                    follow_pushButton->setText("following");
+                    follow_pushButton->setEnabled(false);
+                }
+            }
+        }
+
+        follow_pushButton->setObjectName(QString::number(i));
+        QObject::connect(follow_pushButton, &QPushButton::clicked, [=](){
+            int k = follow_pushButton->objectName().toInt();
+            QString postType2;
+            QSqlQuery q;
+            if(q.exec("SELECT post FROM Users WHERE id = '"+posts[k].id+"'")){
+                if(q.next()){
+                    postType2 = q.value(0).toString();
+                }
+            }
+
+            if(postType2 == "Employee"){
+                follow_pushButton->setText("following");
+                follow_pushButton->setEnabled(false);
+
+                QString newFollowers;
+                QString newConnections;
+                QSqlQuery q2, q3, q4, q5;
+                if(q2.exec("SELECT CM_followers FROM Users WHERE id = '"+posts[k].id+"'")){
+                    if(q2.next()){
+                        if(q2.value(0) == NULL){
+                            newFollowers = ID + '/';
+                        }
+                        else{
+                            newFollowers = newFollowers + ID + '/';
+                        }
+                    }
+                }
+
+                q3.exec("UPDATE Users SET CM_followers = '"+newFollowers+"' WHERE id = '"+posts[k].id+"'");
+                if(q4.exec("SELECT connections FROM Users WHERE id = '"+ID+"'")){
+                    if(q4.next()){
+                        if(q3.value(0) == NULL){
+                            newConnections = posts[k].id + '/';
+                        }
+                        else{
+                            newConnections = newConnections + posts[k].id + '/';
+                        }
+                    }
+                }
+
+                q5.exec("UPDATE Users SET connections = '"+newConnections+"' WHERE id = '"+ID+"'");
+            }
+            else{
+                follow_pushButton->setText("pending");
+                follow_pushButton->setEnabled(false);
+
+                QString newRequests;
+                QSqlQuery q2, q3;
+                if(q2.exec("SELECT requests FROM Users WHERE id = '"+posts[k].id+"'")){
+                    if(q2.next()){
+                        if(q2.value(0) == NULL){
+                            newRequests = ID + '/';
+                        }
+                        else{
+                            newRequests = newRequests + ID + '/';
+                        }
+                    }
+                }
+                q3.exec("UPDATE Users SET requests='"+newRequests+"' WHERE id = '"+posts[k].id+"'");
+            }
+        });
         //Media groupBox
 
         QGroupBox* media_groupBox = new QGroupBox;
@@ -526,6 +618,14 @@ void home::generatePost(QGridLayout *scrollLayout)
              job_groupBoxLayout->addWidget(job_info_groupBox);
              job_scrollLayout->addWidget(job_groupBox);
          }
+         QPushButton* loadMore = new QPushButton;
+         loadMore->setStyleSheet("background-color: rgb(89, 119, 255);");
+         loadMore->setText("Load more");
+         job_scrollLayout->addWidget(loadMore);
+         QObject::connect(loadMore, &QPushButton::clicked, [=](){
+             delete loadMore;
+             generatePost(job_scrollLayout);
+         });
      }
      else{
          QSqlQuery q7;
@@ -668,11 +768,181 @@ void home::generatePost(QGridLayout *scrollLayout)
 
 
          }
+         QPushButton* loadMore = new QPushButton;
+         loadMore->setStyleSheet("background-color: rgb(89, 119, 255);");
+         loadMore->setText("Load more");
+         job_scrollLayout->addWidget(loadMore);
+         QObject::connect(loadMore, &QPushButton::clicked, [=](){
+             delete loadMore;
+             generatePost(job_scrollLayout);
+         });
      }
 }
 
+/////////////////////////////////my network
+///
+ void home::generateNetwork1(QGridLayout *network1_scrollLayout)
+ {
+     QSqlQuery q;
+     QString postType2;
+
+     if(q.exec("SELECT post FROM Users WHERE id = '"+ID+"'")){
+         if(q.next()){
+             postType2 = q.value(0).toString();
+         }
+     }
+     if(postType2 == "Employee"){
+         ui->tabWidget_2->setTabEnabled(1, false);
+         QSqlQuery q2;
+         Account account;
+         if(q2.exec("SELECT CM_followers FROM Users WHERE id = '"+ID+"'")){
+             if(q2.next()){
+                 account.Connection = q2.value(0).toString().split('/');
+             }
+         }
+
+         for(int j=0; j < account.Connection.size(); j++, t++){
+             QLabel* followerId = new QLabel;
+             followerId->setText(account.Connection[t]);
+             followerId->setMinimumHeight(30);
+             followerId->setStyleSheet("background-color: rgb(121, 213, 255);");
+
+             network1_scrollLayout->addWidget(followerId);
+         }
+
+     }
+     else{
+         ui->tabWidget_2->setTabEnabled(1, true);
+         QSqlQuery q;
+         Account account;
+         if(q.exec("SELECT requests FROM Users WHERE id = '"+ID+"'")){
+             if(q.next()){
+                 account.requests = q.value(0).toString().split('/');
+             }
+         }
 
 
+         for(int j=0; j< account.requests.size() - 1; j++, t++){
+             QGroupBox* req = new QGroupBox;
+             QHBoxLayout* req_layout = new QHBoxLayout;
+             req->setLayout(req_layout);
+             req->setStyleSheet("background-color: rgb(121, 213, 255);");
+
+             QLabel* reqId = new QLabel;
+             reqId->setText(account.requests[t]);
+             req_layout->addWidget(reqId);
+
+             QPushButton* reqAccept = new QPushButton;
+             reqAccept->setText("Accept");
+             reqAccept->setStyleSheet("background-color: rgb(35, 255, 138);");
+             req_layout->addWidget(reqAccept);
+
+             QPushButton* reqIgnore = new QPushButton;
+             reqIgnore->setText("Ignore");
+             reqIgnore->setStyleSheet("background-color: rgb(255, 35, 86);");
+             req_layout->addWidget(reqIgnore);
+             reqAccept->setObjectName(QString::number(t));
+             QObject::connect(reqAccept, &QPushButton::clicked, [=]()mutable{
+                 int l = reqAccept->objectName().toInt();
+                 reqAccept->setEnabled(false);
+                 reqIgnore->setEnabled(false);
+                     QString newConnection;
+                     QString newConnection2;
+                     QSqlQuery q6, q7;
+                     if(q6.exec("SELECT connections FROM Users WHERE id = '"+ID+"'")){
+                         if(q6.next()){
+                             newConnection = q6.value(0).toString();
+                             if(newConnection == NULL){
+                               newConnection = account.requests[l] + '/';
+                             }
+                             else{
+                                 newConnection = newConnection + account.requests[l] + '/';
+                             }
+                             q7.exec("UPDATE Users SET connections = '"+newConnection+"' WHERE id = '"+ID+"'");
+                         }
+                     }
+
+
+                     QSqlQuery q8, q9;
+                     if(q8.exec("SELECT connections FROM Users WHERE id = '"+account.requests[l]+"'")){
+                         if(q8.next()){
+                             newConnection2 = q8.value(0).toString();
+                             if(newConnection2 == NULL){
+                               newConnection2 = ID + '/';
+                             }
+                             else{
+                                 newConnection2 = newConnection2 + ID + '/';
+                             }
+                             q9.exec("UPDATE Users SET connections = '"+newConnection2+"' WHERE id = '"+account.requests[l]+"'");
+                         }
+                     }
+
+
+             });
+
+             network1_scrollLayout->addWidget(req);
+
+         }
+
+
+     }
+ }
+
+ void home::generateNetwork2(QGridLayout *network2_scrollLayout)
+ {
+     QSqlQuery q;
+     Account account;
+     if(q.exec("SELECT * FROM Users WHERE JS_intended_J='"+intendedJob+"'")){
+         while(q.next()){
+             if(q.value("id").toString() != ID && q.value("post").toString() != "Employee"){
+                account.suggests.append(q.value("id").toString());
+             }
+         }
+     }
+
+     qDebug() << account.suggests[1];
+     for(int j=0; j<account.suggests.size(); j++, r++){
+         QGroupBox* suggest = new QGroupBox("Same skill");
+                         QHBoxLayout* suggest_layout = new QHBoxLayout;
+                         suggest->setLayout(suggest_layout);
+                         suggest->setStyleSheet("background-color: rgb(175, 255, 250);");
+
+                         QLabel* suggestId = new QLabel;
+                         suggestId->setText(account.suggests[r]);
+                         suggest_layout->addWidget(suggestId);
+
+                         QPushButton* connect = new QPushButton;
+                         connect->setText("Connect");
+                         connect->setMinimumHeight(30);
+                         connect->setStyleSheet("border-radius: 15px;");
+                         connect->setStyleSheet("background-color: rgb(137, 255, 180);");
+                         connect->setObjectName(QString::number(r));
+                         QObject::connect(connect, &QPushButton::clicked, [=]()mutable{
+                             int l = connect->objectName().toInt();
+                             connect->setText("Pending");
+                             connect->setEnabled(false);
+                             QString newRequests;
+                             QSqlQuery q2, q3;
+                             if(q2.exec("SELECT requests FROM Users WHERE id = '"+account.suggests[l]+"'")){
+                                 if(q2.next()){
+                                     newRequests = q2.value(0).toString();
+                                     qDebug() << newRequests;
+                                     if(newRequests == NULL){
+                                         newRequests = ID + '/';
+                                     }
+                                     else{
+                                         newRequests = newRequests + ID + '/';
+                                     }
+                                 }
+                             }
+                             q3.exec("UPDATE Users SET requests='"+newRequests+"' WHERE id = '"+account.suggests[l]+"'");
+
+
+                         });
+                         suggest_layout->addWidget(connect);
+                         network2_scrollLayout->addWidget(suggest);
+     }
+ }
 
 QString home::getTime()
 {
@@ -712,3 +982,29 @@ void home::on_createJob_pushButton_clicked()
     window->show();
 }
 
+void home::changeTheme(){
+    if(darkTheme){
+        ui->tab->setStyleSheet("background-color: rgb(189, 255, 253);");
+        ui->tab_2->setStyleSheet("background-color: rgb(189, 255, 253);");
+        ui->tab_3->setStyleSheet("background-color: rgb(189, 255, 253);");
+        ui->scrollArea->setStyleSheet("background-color: rgb(255, 255, 255);");
+        darkTheme = false;
+    }
+    else{
+        ui->tab->setStyleSheet("background-color: rgb(35, 26, 49);");
+        ui->tab_2->setStyleSheet("background-color: rgb(35, 26, 49);");
+        ui->tab_3->setStyleSheet("background-color: rgb(35, 26, 49);");
+        ui->scrollArea->setStyleSheet("background-color: rgb(138, 178, 255);");
+        darkTheme = true;
+    }
+
+
+
+}
+void home::onTabChanged(int index) {
+    if (index == 3) {
+        profile* window = new profile;
+        window->show();
+
+    }
+}

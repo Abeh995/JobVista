@@ -23,10 +23,15 @@ private slots:
 
     void on_createJob_pushButton_clicked();
 
+
+
 public slots:
     void generatePost(QGridLayout *scrollLayout);
     void generateJob(QGridLayout *job_scrollLayout);
-
+    void generateNetwork1(QGridLayout *network1_scrollLayout);
+    void generateNetwork2(QGridLayout *network2_scrollLayout);
+    void changeTheme();
+    void onTabChanged(int index);
     QString getTime();
 private:
     Ui::home *ui;

@@ -17,6 +17,19 @@
    <string notr="true">background-color: rgb(35, 26, 49);</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="0" column="1">
     <widget class="QLineEdit" name="lineEdit">
      <property name="minimumSize">
@@ -53,19 +66,6 @@ border-radius:20px;</string>
      </property>
     </spacer>
    </item>
-   <item row="0" column="0">
-    <spacer name="horizontalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="1" column="0" colspan="3">
     <widget class="QTabWidget" name="tabWidget">
      <property name="styleSheet">
@@ -78,7 +78,7 @@ border-radius:20px;</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -389,6 +389,130 @@ QPushButton:hover{
       <attribute name="title">
        <string>🛜</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QTabWidget" name="tabWidget_2">
+         <property name="tabPosition">
+          <enum>QTabWidget::East</enum>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <widget class="QWidget" name="tab_6">
+          <attribute name="title">
+           <string>Tab 1</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <item row="0" column="1">
+            <widget class="QScrollArea" name="network1_scrollArea">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_3">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>543</width>
+                <height>448</height>
+               </rect>
+              </property>
+             </widget>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <spacer name="horizontalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>150</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="2">
+            <spacer name="horizontalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>150</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_7">
+          <attribute name="title">
+           <string>Tab 2</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="1">
+            <widget class="QScrollArea" name="network2_scrollArea">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_4">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>543</width>
+                <height>448</height>
+               </rect>
+              </property>
+             </widget>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <spacer name="horizontalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>150</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="2">
+            <spacer name="horizontalSpacer_10">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>150</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -504,14 +628,9 @@ border-radius:15px;</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_4">
-      <attribute name="title">
-       <string>Page</string>
-      </attribute>
-     </widget>
      <widget class="QWidget" name="tab_5">
       <attribute name="title">
-       <string>Page</string>
+       <string>Me</string>
       </attribute>
      </widget>
     </widget>
