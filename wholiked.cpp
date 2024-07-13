@@ -105,7 +105,6 @@ wholiked::wholiked(QWidget *parent) :
 
         QPushButton* id_pushButton= new QPushButton;
         QFont font("Segoe UI Emoji", 13);
-//        likePushButton->setMaximumWidth(60);
         id_pushButton->setMinimumSize(50, 30);
         id_pushButton->setFont(font);
         id_pushButton->setText(likers[i].id);

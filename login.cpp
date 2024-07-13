@@ -53,7 +53,7 @@ void login::on_pushButton_2_clicked()
     if(ui->lineEdit->text( ) != NULL && ui->lineEdit_2->text() != NULL ){
             QSqlQuery q;
             ID = ui->lineEdit->text();
-            q.exec("SELECT password FROM jobSeekers WHERE id = '"+ID+"'");
+            q.exec("SELECT password FROM Users WHERE id = '"+ID+"'");
             if(q.first()){
                QString  Password = q.value(0).toString();
                QString enterdPass = ui->lineEdit_2->text();
@@ -74,12 +74,9 @@ void login::on_pushButton_2_clicked()
                                              "QMessageBox QPushButton { background-color: #555555; color: #fff; }");
                         int ret = msgBox.exec();
 
-                            // Handle the response
                             switch (ret) {
                               case QMessageBox::Ok:
-                                  // Ok was clicked
                                   break;}
-                        //QMessageBox::warning(this, "Error", "Wrong information!");
                 }
             }
             else{

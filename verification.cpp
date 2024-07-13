@@ -3,6 +3,8 @@
 #include"basicclasses.h"
 #include "signup.h"
 #include "splash.h"
+#include "home.h"
+#include "profile.h"
 
 #include <QPropertyAnimation>
 #include <QValidator>
@@ -81,7 +83,6 @@ void verification::handleKeyPress(QKeyEvent *event)
             int min = 1000;
             int max = 9999;
             random2 = QRandomGenerator::global()->bounded(min, max + 1);
-            //QThread::sleep(3);
 
             ui->lineEdit->setEnabled(true);
             ui->lineEdit_2->setEnabled(true);
@@ -91,7 +92,6 @@ void verification::handleKeyPress(QKeyEvent *event)
             ui->lineEdit->setFocus();
 
             //Sleep for label
-            //QString text = "      " + QString::number(random2);
             QString text = QString("<div align='center'>%1</div>").arg(random2);
             ui->label_code->setText(text);
             ui->label_code->show();
@@ -159,19 +159,15 @@ void verification::on_pushButton_verify_clicked()
     int ten = random2 / 10 - (thousand * 100 + hundred * 10);
     int one = random2 - (thousand * 1000 + hundred * 100 + ten * 10);
     if(ui->lineEdit->text().toInt() != thousand){
-        //QMessageBox::warning(this, "Wrong code", "Try again!");
         swVerify=false;
     }
     else if(ui->lineEdit_2->text().toInt() != hundred){
-        //QMessageBox::warning(this, "Wrong code", "Try again!");
         swVerify=false;
     }
     else if(ui->lineEdit_3->text().toInt() != ten){
-        //QMessageBox::warning(this, "Wrong code", "Try again!");
         swVerify=false;
     }
     else if(ui->lineEdit_4->text().toInt() != one){
-        //QMessageBox::warning(this, "Wrong code", "Try again!");
         swVerify=false;
     }
 
@@ -179,6 +175,9 @@ void verification::on_pushButton_verify_clicked()
     if(swVerify){
         QSqlQuery q;
          q.exec("UPDATE jobSeekers SET phoneNumber = '"+PhoneNumber+"' WHERE id = '"+ID+"' " ) ;
+         profile* window = new profile;
+         window->show();
+         this->close();
     }
     else{
         swVerify=true;
@@ -239,9 +238,7 @@ void verification::on_lineEdit_4_textChanged(const QString &text)
         ui->lineEdit_3->setFocus();
         return;
     }
-//    ui->pushButton->setFocus();
-//    ui->pushButton->setDefault(true);
-//    ui->pushButton->setAutoDefault(false);
+
 }
 
 

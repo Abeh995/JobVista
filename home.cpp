@@ -41,6 +41,8 @@ QVector<Post> SGposts;
 
 QVector<Post> RNDposts;
 
+QList<QMediaPlayer*> allPlayers;
+
 int i=0;
 
 home::home(QWidget *parent) :
@@ -78,9 +80,7 @@ void home::generatePost(QGridLayout *scrollLayout)
     QString user_skill_occupation;
     if(connectionQuery.next()){
         connectionList = connectionQuery.value("connections").toString().split('/');
-//        for(int q2=0;q2<connectionList.size();q2++){
-//            qDebug()<<"connectionsplit "<< connectionList[q2];
-//        }
+
 
         if(connectionQuery.value("post").toString() =="Employer"){
             user_skill_occupation=connectionQuery.value("CM_occupation").toString();
@@ -190,9 +190,6 @@ void home::generatePost(QGridLayout *scrollLayout)
         qDebug()<<posts[q].id;
     }
 
-    //    for (const Post &post : posts) {
-    //            qDebug() << "Post ID:" << post.id << ", Time:" << post.time;
-    //        }
     qDebug()<<"posts size"<<posts.size();
 
 
@@ -231,7 +228,6 @@ void home::generatePost(QGridLayout *scrollLayout)
         profile_label->setMaximumSize(50, 50);
         profile_label->setScaledContents(true);
         info_groupboxLayout->addWidget(profile_label);
-        // for example:
 
         // Load pixmap from media data
             QPixmap pix;
@@ -382,13 +378,10 @@ void home::generatePost(QGridLayout *scrollLayout)
         react_groupBox->setLayout(react_groupBoxLayout);
 
         QPushButton* likePushButton = new QPushButton;
-//        likePushButton->setObjectName(QString("likePushButton-%1").arg(i));
         QFont font2("MS Shell Dlg 2", 23);
         likePushButton->setCursor(Qt::PointingHandCursor);
         likePushButton->setMaximumWidth(60);
-        //likePushButton->setMinimumSize(0, 40);
         likePushButton->setFont(font2);
-//        likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
         react_groupBoxLayout->addWidget(likePushButton);
 
         // check post is liked
@@ -417,12 +410,10 @@ void home::generatePost(QGridLayout *scrollLayout)
             query.bindValue(":senderid", posts[k].id);
             query.bindValue(":postid", posts[k].postId);
 
-            // Execute the query
             if (!query.exec()) {
                 qDebug() << "Query execution failed: " << query.lastError();
             }
 
-            // Check if any results were returned
             if (query.next()) {
                 // Record exists, delete it
                 QSqlQuery deleteQuery;
@@ -435,11 +426,8 @@ void home::generatePost(QGridLayout *scrollLayout)
                     qDebug() << "Delete query execution failed: " << deleteQuery.lastError();
                 }
 
-
-                // Update the button style to "unliked"
                 likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
             } else {
-                // Record does not exist, insert it
                 QSqlQuery insertQuery;
                 insertQuery.prepare("INSERT INTO Likes (id, senderId, postId ,time) VALUES (:id, :senderid, :postid, :time)");
                 insertQuery.bindValue(":id", ID);
@@ -450,8 +438,6 @@ void home::generatePost(QGridLayout *scrollLayout)
                 if (!insertQuery.exec()) {
                     qDebug() << "Insert query execution failed: " << insertQuery.lastError();
                 }
-
-                // Update the button style to "liked"
                 likePushButton->setStyleSheet("image: url(:/icon/icon-liked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
             }
         });
@@ -465,7 +451,6 @@ void home::generatePost(QGridLayout *scrollLayout)
         commentPushButton->setMaximumWidth(60);
 
         QPushButton* repostPushbutton = new QPushButton;
-        //repostPushbutton->setMinimumSize(0, 50);
         repostPushbutton->setCursor(Qt::PointingHandCursor);
         repostPushbutton->setMaximumWidth(60);
         repostPushbutton->setFont(font2);
@@ -474,7 +459,6 @@ void home::generatePost(QGridLayout *scrollLayout)
         repostPushbutton->setObjectName(QString::number(i));
         QObject::connect(repostPushbutton, &QPushButton::clicked, [=]() mutable {
             int k=repostPushbutton->objectName().toInt();
-        //    if()
             QSqlQuery insertQuery;
             insertQuery.prepare("INSERT INTO Posts (id, postId, tag, text, media, mediaType, LCR_counter, rePostId, time) VALUES (:id, :postid, :tag, :text, :media, :mediaType, :lcr_counter, :repostid, :time)");
             insertQuery.bindValue(":id", posts[k].id);
@@ -493,7 +477,6 @@ void home::generatePost(QGridLayout *scrollLayout)
         react_groupBoxLayout->addWidget(repostPushbutton);
 
         QPushButton* sendPushButton = new QPushButton;
-//        sendPushButton->setMinimumSize(0, 60);
         sendPushButton->setMaximumSize(50, 50);
         sendPushButton->setCursor(Qt::PointingHandCursor);
         sendPushButton->setFont(font2);
@@ -510,23 +493,19 @@ void home::generatePost(QGridLayout *scrollLayout)
 QString home::getTime()
 {
     QDateTime dateTime = QDateTime::currentDateTime();
-
-        // Extract the year, month, day, hour, minute, and second
         int year = dateTime.date().year();
         int month = dateTime.date().month();
         int day = dateTime.date().day();
         int hour = dateTime.time().hour();
         int minute = dateTime.time().minute();
         int second = dateTime.time().second();
-
-        // Combine them into a single string
         QString timeString = QString("%1%2%3%4%5%6")
-                .arg(year, 4, 10, QChar('0'))   // Year with 4 digits
-                .arg(month, 2, 10, QChar('0'))  // Month with 2 digits
-                .arg(day, 2, 10, QChar('0'))    // Day with 2 digits
-                .arg(hour, 2, 10, QChar('0'))   // Hour with 2 digits
-                .arg(minute, 2, 10, QChar('0')) // Minute with 2 digits
-                .arg(second, 2, 10, QChar('0'));// Second with 2 digits
+                .arg(year, 4, 10, QChar('0'))
+                .arg(month, 2, 10, QChar('0'))
+                .arg(day, 2, 10, QChar('0'))
+                .arg(hour, 2, 10, QChar('0'))
+                .arg(minute, 2, 10, QChar('0'))
+                .arg(second, 2, 10, QChar('0'));
         return timeString;
 }
 

@@ -27,6 +27,8 @@ private slots:
 
     void on_yearOfBirth_comboBox_currentTextChanged(const QString &arg1);
 
+    void handleKeyPress(QKeyEvent *event);
+
 public slots:
     void afterSleep();
 
@@ -36,8 +38,11 @@ private:
 
     Ui::profile *ui;
 
+
 protected:
     void closeEvent(QCloseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event);
+
 
 };
 

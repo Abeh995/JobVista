@@ -26,8 +26,6 @@
 #include <QSqlQuery>
 #include <QSqlQueryModel>
 
-//QString ID;
-//QString PhoneNumber;
 int swReCaptcha=0,swDatabase = 1, swCaptcha, swPhone = 1;
 QString inText;
 
@@ -44,17 +42,10 @@ signup::signup(QWidget *parent) :
     animation->setStartValue(0);
     animation->setEndValue(1);
     animation->start();
-//    ui->pushButton_2->setFocus();
-//    ui->pushButton_2->setDefault(true);
-//    ui->pushButton_2->setAutoDefault(false);
+
     ui->lineEdit_username->setFocus();
     ui->lineEdit_phonenumber->setValidator(new QIntValidator);
 
-
-
-//        QPalette pal = ui->comboBox->palette();
-//        pal.setColor(ui->comboBox->backgroundRole(), Qt::red); // Set the desired background color
-//        ui->comboBox->setPalette(pal);
 }
 
 signup::~signup()
@@ -80,23 +71,19 @@ int signup::CheckInformation()
     QSqlQuery q;
     ID = ui->lineEdit_username->text();
     PhoneNumber = ui->comboBox->currentText() + "-" + ui->lineEdit_phonenumber->text();
-    q.exec("SELECT password FROM jobSeekers WHERE id = '"+ID+"'");
+    q.exec("SELECT password FROM Users WHERE id = '"+ID+"'");
     if(q.first()){
-        return 1; // THE USERNAME ALREDY EXIST
+        return 1; //  USERNAME ALREDY EXIST
     }
-    q.exec("SELECT password FROM jobSeekers WHERE phoneNumber = '"+PhoneNumber+"'");
+    q.exec("SELECT password FROM Users WHERE phoneNumber = '"+PhoneNumber+"'");
     if(q.first()){
-        return 2; // THE PHONE NUMBER ALREDY EXIST
+        return 2; //  PHONE NUMBER ALREDY EXIST
     }
     QString Password=ui->lineEdit_password->text();
     bool num=true, letter=true, shape=true;
-//    for(int i=0; Password[i] != "\0";i++){
-//        if(Password[i]>=48&&Password[i]<=57) num= true;
-//                else if((Password[i]>='A'&& Password[i]<='Z') || (Password[i]>='a'&& Password[i]<='z')) letter= true;
-//                            else if(Password[i]=='!' || Password[i]=='@' || Password[i]=='#' || Password[i]== '$' ) shape =true;
-//    }
+
     if(num && letter ){
-        q.exec("INSERT INTO jobSeekers(id, password, phoneNumber) VALUES ('"+ID+"', '"+Password+"','"+PhoneNumber+"')");
+        q.exec("INSERT INTO Users (id, password, phoneNumber) VALUES ('"+ID+"', '"+Password+"','"+PhoneNumber+"')");
         if(shape){
            return 0;
         }
@@ -125,7 +112,6 @@ void signup::GenCaptcha()
         }
 
     }
-    //ui->label_captcha->setText(inText);
     QFile newpic("pics/"+inText+".png");
     newpic.open(QIODevice::WriteOnly);
     qDebug() << "pics/"+inText+".png";
@@ -202,13 +188,11 @@ void signup::on_pushButton_continue_clicked()
 
 void signup::handleKeyPress(QKeyEvent *event)
 {
-    // Show the previous window
-        // For example:
         login *lg = new login();
         lg->show();
         this->close();
 }
-///////////////////////////////////////////////////
+
 QPixmap signup::makeImg(QString inText)
 {
     QPixmap pixmap(300,50);
@@ -257,8 +241,6 @@ QPixmap signup::distortImg(QPixmap pixmap)
 
     return pixmap2;
 }
-//////////////////////////////////////////////
-
 
 void signup::on_pushButton_Recaptcha_clicked()
 {

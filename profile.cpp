@@ -34,20 +34,16 @@ profile::profile(QWidget *parent) :
             QByteArray imageData = q.value(0).toByteArray();
             QPixmap pixmap;
             pixmap.loadFromData(imageData);
-                    // Save pixmap to a file
                     imagePath = QDir::homePath() + "/profilePhoto.png";
                     if(pixmap.save(imagePath)){
-                        // Set the image on the button using styleSheet
                         ui->changeProfile_pushButton->setStyleSheet(QString("QPushButton {border-image: url(%1); border-radius:55px;}").arg(imagePath));
                     }
                     else{
-                        // Handle error if saving failed
                         qDebug() << "Error saving image file";
                     }
                 }
             }
             else{
-                // Handle the error
                 qDebug() << "Error retrieving profile photo:" << q.lastError().text();
             }
 
@@ -84,13 +80,15 @@ profile::profile(QWidget *parent) :
     }
     q.exec("SELECT birthDate FROM Users WHERE id='"+ID+"'");
     if(q.first()){
-        QStringList dateParts = q.value(0).toString().split('/');
-        ui->monthOfBirth_comboBox->setCurrentText(dateParts[0]);
-        ui->dayOfBirth_comboBox->setCurrentText(dateParts[1]);
-        //ui->id_label->setText(dateParts[2]);
-        // not Working correctly:
-        ui->yearOfBirth_comboBox->setCurrentText(dateParts[2]);
-        // can you fix that? :)
+        if(q.value(0).toString() !=NULL){
+            QStringList dateParts = q.value(0).toString().split('/');
+            ui->monthOfBirth_comboBox->setCurrentText(dateParts[0]);
+            ui->dayOfBirth_comboBox->setCurrentText(dateParts[1]);
+            //ui->id_label->setText(dateParts[2]);
+            // not Working correctly:
+            ui->yearOfBirth_comboBox->setCurrentText(dateParts[2]);
+            // can you fix that? :)
+        }
     }
     ui->liveAgeShower_label->setNum(2024-ui->yearOfBirth_comboBox->currentText().toInt());
     q.exec("SELECT post FROM Users WHERE id='"+ID+"'");
@@ -229,12 +227,10 @@ void profile::on_changeProfile_pushButton_clicked()
         q.bindValue(":photo", imageData);
         q.bindValue(":id", ID);
         if(!q.exec()){
-            // Handle the error
             qDebug() << "Error updating profile photo:" << q.lastError().text();
         }
     }
     else{
-        // Handle the error if the file can't be opened
         qDebug() << "Error opening image file:" << file.errorString();
     }
 }
@@ -298,16 +294,33 @@ void profile::on_yearOfBirth_comboBox_currentTextChanged(const QString &arg1)
     ui->liveAgeShower_label->setNum(2024-arg1.toInt());
 }
 
+void profile::handleKeyPress(QKeyEvent *event)
+{
+    home * window = new home;
+    window->show();
+    this->close();
+}
+
 void profile::closeEvent(QCloseEvent *event)
 {
     QString imagePath = QDir::homePath() + "/profilePhoto.png";
     if(QFile::exists(imagePath)){
         if(!QFile::remove(imagePath)){
-            // Handle error if deletion failed
             qDebug() << "Error deleting image file";
         }
     }
-    // Call the base class implementation of closeEvent
     QWidget::closeEvent(event);
+}
+
+void profile::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape)
+       {
+           handleKeyPress(event);
+       }
+       else
+       {
+           QWidget::keyPressEvent(event);
+       }
 }
 

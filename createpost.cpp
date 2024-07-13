@@ -65,11 +65,9 @@ void createPost::on_media_pushButton_clicked()
                 qDebug() << "Error opening image file:" << file.errorString();
             }
 
-            // Determine the media format
             QFileInfo fileInfo(filePath2);
             QString suffix = fileInfo.suffix().toLower();
 
-            // Clear previous media
             if (imageLabel) {
                 delete imageLabel;
                 imageLabel = nullptr;
@@ -169,7 +167,6 @@ void createPost::on_media_pushButton_clicked()
 
 void createPost::on_emoji_pushButton_clicked()
 {
-    // Set up the emoji menu
         QStringList emojis = {"😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😉", "😊"};
 
         for (const QString &emoji : emojis) {
@@ -199,7 +196,6 @@ void createPost::on_post_pushButton_clicked()
 
     QDateTime dateTime = QDateTime::currentDateTime();
 
-        // Extract the year, month, day, hour, minute, and second
         int year = dateTime.date().year();
         int month = dateTime.date().month();
         int day = dateTime.date().day();
@@ -207,7 +203,6 @@ void createPost::on_post_pushButton_clicked()
         int minute = dateTime.time().minute();
         int second = dateTime.time().second();
 
-        // Combine them into a single string
         QString timeString = QString("%1%2%3%4%5%6")
                 .arg(year, 4, 10, QChar('0'))   // Year with 4 digits
                 .arg(month, 2, 10, QChar('0'))  // Month with 2 digits
@@ -256,7 +251,6 @@ void createPost::on_post_pushButton_clicked()
     if(mediaType!=""){
         q.exec("UPDATE Posts SET mediaType  ='"+mediaType+"' WHERE id= '"+ID+"' AND postId = '"+newPostId+"'");
     }
-//    q.exec("UPDATE Posts SET likersId  ='"+QString("")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET comments  ='"+QString("")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET LCR_counter  ='"+mmd+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET rePostId  ='"+QString("empty")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
@@ -265,7 +259,6 @@ void createPost::on_post_pushButton_clicked()
     if(sw2 == "mp4" || sw2 == "mkv"){
         mediaPlayer->stop();
     }
-//    this->close();
 }
 
 void createPost::closeEvent(QCloseEvent *event)
@@ -290,16 +283,12 @@ void createPost::on_schedule_pushButton_clicked()
 
 
     QDateTime dateTime = ui->dateTimeEdit->dateTime();
-
-        // Extract the year, month, day, hour, minute, and second
         int year = dateTime.date().year();
         int month = dateTime.date().month();
         int day = dateTime.date().day();
         int hour = dateTime.time().hour();
         int minute = dateTime.time().minute();
         int second = dateTime.time().second();
-
-        // Combine them into a single string
         QString timeString = QString("%1%2%3%4%5%6")
                 .arg(year, 4, 10, QChar('0'))   // Year with 4 digits
                 .arg(month, 2, 10, QChar('0'))  // Month with 2 digits
@@ -348,7 +337,6 @@ void createPost::on_schedule_pushButton_clicked()
     if(mediaType!=""){
         q.exec("UPDATE Posts SET mediaType  ='"+mediaType+"' WHERE id= '"+ID+"' AND postId = '"+newPostId+"'");
     }
-//    q.exec("UPDATE Posts SET likersId  ='"+QString("")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET comments  ='"+QString("")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET LCR_counter  ='"+mmd+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET rePostId  ='"+QString("empty")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
@@ -357,6 +345,6 @@ void createPost::on_schedule_pushButton_clicked()
     if(sw2 == "mp4" || sw2 == "mkv"){
         mediaPlayer->stop();
     }
-//    this->close();
+    this->close();
 }
 
