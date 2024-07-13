@@ -115,8 +115,9 @@ viewprofile::viewprofile(QWidget *parent) :
                 while(qPost.next()){
                     Post post;
 
-                    post.id = q.value("id").toString();
-
+                    post.id = qPost.value("id").toString();
+                    post.rePosted = qPost.value("rePostId").toString();
+//                    qDebug()<<"rePost Error ! "<<q
 /*
 //                    QSqlQuery q2;
 //                    q2.prepare("SELECT profilePhoto FROM Users WHERE id = :id");
@@ -152,7 +153,6 @@ viewprofile::viewprofile(QWidget *parent) :
                         }
                             // Handling media (BLOBs)
                     QString mediaType = qPost.value("mediaType").toString();
-                    post.rePosted = q.value("rePostId").toString();
                     posts.append(post);
                 }
             QStringList  followersList;
@@ -220,7 +220,7 @@ viewprofile::viewprofile(QWidget *parent) :
 
             QGroupBox* post_groupBox = new QGroupBox;
             if(posts[i].rePosted != "empty"){
-                post_groupBox->setTitle(QString (" from ' %1 '").arg(posts[i].rePosted));
+                post_groupBox->setTitle(QString (" from ' %1 'Reposted").arg(posts[i].rePosted));
             }
             //post_groupBox->setObjectName(QString("post_groupBox_%1").arg(i));
             post_groupBox->setMinimumHeight(500);

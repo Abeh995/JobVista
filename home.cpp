@@ -25,6 +25,10 @@
 #include <QDebug>
 #include <QImage>
 #include <QPainter>
+#include <QMovie>
+#include <QMediaPlayer>
+#include <QVideoWidget>
+#include<QBuffer>
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -32,6 +36,10 @@
 #include <QByteArray>
 
 QVector<Post> posts;
+
+QVector<Post> SGposts;
+
+QVector<Post> RNDposts;
 
 int i=0;
 
@@ -59,65 +67,152 @@ home::~home()
 
 void home::generatePost(QGridLayout *scrollLayout)
 {
+    QSqlQuery connectionQuery;
+
+    connectionQuery.prepare("SELECT * FROM Users WHERE id = :id");
+    connectionQuery.bindValue(":id", ID);
+    if(!connectionQuery.exec()){
+        qDebug()<<"connection Query error"<<connectionQuery.lastError();
+    }
+    QStringList connectionList;
+    QString user_skill_occupation;
+    if(connectionQuery.next()){
+        connectionList = connectionQuery.value("connections").toString().split('/');
+//        for(int q2=0;q2<connectionList.size();q2++){
+//            qDebug()<<"connectionsplit "<< connectionList[q2];
+//        }
+
+        if(connectionQuery.value("post").toString() =="Employer"){
+            user_skill_occupation=connectionQuery.value("CM_occupation").toString();
+        }
+        else{
+            user_skill_occupation=connectionQuery.value("JS_intended_J").toString();
+        }
+    } else {
+        qDebug() << "Error: No record found -" << connectionQuery.lastError();
+    }
+
+
     QSqlQuery q;
     q.prepare("SELECT * FROM Posts ORDER BY time DESC");
     if(!q.exec()){
         qDebug() << "Error: failed to execute query -" << q.lastError();
     }
-
+    int postCounter=0;
     while(q.next()){
-        Post post;
-        post.id = q.value("id").toString();
+        if(q.value("time").toString() < getTime()){
+            if(q.value("rePostId")=="empty"){
 
-        QSqlQuery q2;
-        q2.prepare("SELECT profilePhoto FROM Users WHERE id = :id");
-        q2.bindValue(":id", q.value("id").toString());
-        if(q2.exec()){
-            if(q2.next()){
-                QByteArray prof=q2.value("profilePhoto").toByteArray();
-                if(!prof.isEmpty()){
+                Post post;
+                post.id = q.value("id").toString();
+                post.LCR_counter = q.value("LCR_counter").toString();
+                post.rePosted=q.value("rePostId").toString();
+                QSqlQuery q2;
+                q2.prepare("SELECT * FROM Users WHERE id = :id");
+                q2.bindValue(":id", q.value("id").toString());
 
-                    post.profilePhoto=prof;
+                if(q2.exec()){
+                    if(q2.next()){
+                        QByteArray prof=q2.value("profilePhoto").toByteArray();
+                        if(!prof.isEmpty()){
+
+                            post.profilePhoto=prof;
+                        }
+                        else{
+    //                            qDebug()<< "ame is empty"<<q2.lastError();
+                        }
+                    }
+                    else{
+                        qDebug()<< "ame is dead be mola "<<q2.value("id").toString()<< q2.lastError();
+                    }
+                } else{
+                    qDebug()<< "error loading profile for id: "<< post.id<<" ERROR: "<<q2.lastError();
                 }
-                else{
-                    qDebug()<< "ame is empty"<<q2.lastError();
+
+                post.postId = q.value("postId").toString();
+                post.text = q.value("text").toString();
+
+                QByteArray media=q.value("media").toByteArray();
+                        // Check if media is valid
+                if (!media.isEmpty()) {
+                    post.media = media;
+                 } else {
+    //                        qDebug() << "Warning: Post with ID" << post.id << "has empty media.";
+                    }
+                        // Handling media (BLOBs)
+                post.mediaType = q.value("mediaType").toString();
+                bool swAppended=false;
+                for(int p=0;p<connectionList.size();p++){
+                    if(connectionList[p] == post.id){
+                        posts.append(post);
+                        swAppended=true;
+                        qDebug()<<"connectionPost for:"<< post.id;
+                        postCounter++;
+                        break;
+                    }
                 }
+                if(q.value("tag").toString() == user_skill_occupation && !swAppended){
+                    swAppended=true;
+                    postCounter++;
+                    if(q2.value("post").toString() == "Employer"){
+                        post.suggested="by your occupation";
+                    }
+                    else{
+                        post.suggested="by your skill";
+                    }
+                    qDebug()<<"SGPost for:"<< post.id;
+                    SGposts.append(post);
+                }
+                else if(!swAppended){
+                    post.suggested="by more liked post";
+                    RNDposts.append(post);
+                    postCounter++;
+                    qDebug()<<"RNDPost for:"<< post.id;
+                }
+
+
 
             }
-            else{
-                qDebug()<< "ame is dead be mola "<< q2.lastError();
-            }
-        } else{
-            qDebug()<< "error loading profile for id: "<< post.id<<" ERROR: "<<q2.lastError();
+
+
+
+
         }
+        if(postCounter>99) {
+            break;
+        }
+    }
+    posts+=SGposts;
+    posts+=RNDposts;
 
-        post.postId = q.value("postId").toString();
-        post.text = q.value("text").toString();
 
-        QByteArray media=q.value("media").toByteArray();
-                // Check if media is valid
-        if (!media.isEmpty()) {
-            post.media = media;
-         } else {
-                qDebug() << "Warning: Post with ID" << post.id << "has empty media.";
-            }
-                // Handling media (BLOBs)
-        QString mediaType = q.value("mediaType").toString();
-        posts.append(post);
+    for(int q=0;q<posts.size();q++){
+        qDebug()<<posts[q].id;
     }
 
     //    for (const Post &post : posts) {
     //            qDebug() << "Post ID:" << post.id << ", Time:" << post.time;
     //        }
+    qDebug()<<"posts size"<<posts.size();
 
-    for( int j=0  ; j<10  ; i++ , j++){
+
+    for( int j=0  ; j<10 && posts.size()-1  ; i++ , j++){
 
         //post groupBox
 
-        QGroupBox* post_groupBox = new QGroupBox(QString("Suggested-%1").arg(i));
+        QGroupBox* post_groupBox = new QGroupBox;
+        if(posts[i].suggested != NULL){
+            post_groupBox->setTitle(QString ("suggested %1").arg(posts[i].suggested));
+        }
+        else if(posts[i].rePosted != "empty"){
+            post_groupBox->setTitle(QString ("rePosted from %1").arg(posts[i].rePosted));
+        }
         //post_groupBox->setObjectName(QString("post_groupBox_%1").arg(i));
         post_groupBox->setMinimumHeight(500);
         post_groupBox->setMaximumSize(500, 16777215);
+        if(darkTheme){
+           post_groupBox->setStyleSheet("background-color: rgb(110, 45, 190); border-radius:5px;");
+        }
         QVBoxLayout* post_groupBoxLayout = new QVBoxLayout;
         post_groupBox->setLayout(post_groupBoxLayout);
 
@@ -125,6 +220,9 @@ void home::generatePost(QGridLayout *scrollLayout)
 
         QGroupBox* info_groupBox = new QGroupBox/*(QString("prof-%1" ).arg(i))*/;
         info_groupBox->setMaximumHeight(70);
+        if(darkTheme){
+            info_groupBox->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(0, 0, 0, 0)); border-radius:5px;");
+        }
         QHBoxLayout* info_groupboxLayout = new QHBoxLayout;
         info_groupBox->setLayout(info_groupboxLayout);
 
@@ -173,7 +271,7 @@ void home::generatePost(QGridLayout *scrollLayout)
         follow_pushButton->setMaximumSize(110, 16777215);
         QFont font("Pristina", 17);
         follow_pushButton->setFont(font);
-        follow_pushButton->setText("+follow");
+
         follow_pushButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); color: rgb(41, 69, 255); border-radius: 20px;");
         info_groupboxLayout->addWidget(follow_pushButton);
 
@@ -187,21 +285,28 @@ void home::generatePost(QGridLayout *scrollLayout)
 
         // Post Image
 
-        QLabel* postImage_label = new QLabel;
-        //postImage_label->setMinimumHeight(450);
-        postImage_label->setMaximumSize(650, 300);
-        postImage_label->setScaledContents(true);
+        if(posts[i].mediaType =="image"){
+            QLabel* postImage_label = new QLabel;
+            //postImage_label->setMinimumHeight(450);
+            postImage_label->setMaximumSize(650, 300);
+            postImage_label->setScaledContents(true);
 
-//        QPixmap pix;
-        if (!pix.loadFromData(posts[i].media)) {
-            qDebug() << "Error: Failed to load pixmap from media for post ID" << posts[i].id;
-        } else {
-                    postImage_label->setPixmap(pix);
+    //        QPixmap pix;
+            if (!pix.loadFromData(posts[i].media)) {
+                qDebug() << "Error: Failed to load pixmap from media for post ID" << posts[i].id;
+            } else {
+                        postImage_label->setPixmap(pix);
+            }
+
+            postImage_label->setStyleSheet("border-radius: 25px;");
+            postImage_label->setStyleSheet("border-image: url(:/icon/icon-logo.png);");
+            media_groupBoxLayout->addWidget(postImage_label);
+        } else if(posts[i].mediaType == "video"){
+
+        } else if(posts[i].mediaType == "gif"){ // media is gif
+
         }
 
-        postImage_label->setStyleSheet("border-radius: 25px;");
-        postImage_label->setStyleSheet("border-image: url(:/icon/icon-logo.png);");
-        media_groupBoxLayout->addWidget(postImage_label);
 
         QLabel* text_label = new QLabel;
         text_label->setWordWrap(true);
@@ -247,7 +352,7 @@ void home::generatePost(QGridLayout *scrollLayout)
         QStringList lcr= posts[i].LCR_counter.split('/');
 
         QPushButton* whoLikedPushButton = new QPushButton;
-        whoLikedPushButton->setText(QString("Ame Sekine And %1 other liked").arg(lcr[0]));
+        whoLikedPushButton->setText(QString("%1 like").arg(lcr[0]));
         whoLikedPushButton->setMinimumSize(110, 20);
         whoLikedPushButton->setMaximumSize(150, 30);
         whoLikedPushButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius:10px;");
@@ -265,7 +370,7 @@ void home::generatePost(QGridLayout *scrollLayout)
         counter_groupBoxLayout->addSpacerItem(counter_horizontalSpacer);
 
         QLabel* commentAndRepostCounterLabel = new QLabel;
-        commentAndRepostCounterLabel->setText("?comment ? repost");
+        commentAndRepostCounterLabel->setText(QString("%1 comment, %2 rePoste").arg(lcr[1]).arg(lcr[2]));
         commentAndRepostCounterLabel->setMinimumSize(110, 20);
         commentAndRepostCounterLabel->setMaximumSize(150, 30);
         counter_groupBoxLayout->addWidget(commentAndRepostCounterLabel);
@@ -279,6 +384,7 @@ void home::generatePost(QGridLayout *scrollLayout)
         QPushButton* likePushButton = new QPushButton;
 //        likePushButton->setObjectName(QString("likePushButton-%1").arg(i));
         QFont font2("MS Shell Dlg 2", 23);
+        likePushButton->setCursor(Qt::PointingHandCursor);
         likePushButton->setMaximumWidth(60);
         //likePushButton->setMinimumSize(0, 40);
         likePushButton->setFont(font2);
@@ -353,25 +459,46 @@ void home::generatePost(QGridLayout *scrollLayout)
         QPushButton* commentPushButton = new QPushButton;
         //commentPushButton->setMinimumSize(0, 40);
         commentPushButton->setFont(font2);
+        commentPushButton->setCursor(Qt::PointingHandCursor);
         commentPushButton->setStyleSheet("image: url(:/icon/icon-comment.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
         react_groupBoxLayout->addWidget(commentPushButton);
         commentPushButton->setMaximumWidth(60);
 
         QPushButton* repostPushbutton = new QPushButton;
         //repostPushbutton->setMinimumSize(0, 50);
-        repostPushbutton->setFont(font2);
-        repostPushbutton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
-        repostPushbutton->setText("🔁");
-        react_groupBoxLayout->addWidget(repostPushbutton);
+        repostPushbutton->setCursor(Qt::PointingHandCursor);
         repostPushbutton->setMaximumWidth(60);
+        repostPushbutton->setFont(font2);
+        repostPushbutton->setStyleSheet("image: url(:/icon/icon-repost.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
+
+        repostPushbutton->setObjectName(QString::number(i));
+        QObject::connect(repostPushbutton, &QPushButton::clicked, [=]() mutable {
+            int k=repostPushbutton->objectName().toInt();
+        //    if()
+            QSqlQuery insertQuery;
+            insertQuery.prepare("INSERT INTO Posts (id, postId, tag, text, media, mediaType, LCR_counter, rePostId, time) VALUES (:id, :postid, :tag, :text, :media, :mediaType, :lcr_counter, :repostid, :time)");
+            insertQuery.bindValue(":id", posts[k].id);
+            insertQuery.bindValue(":postid", posts[k].postId);
+            insertQuery.bindValue(":tag", posts[k].tag);
+            insertQuery.bindValue(":text", posts[k].text);
+            insertQuery.bindValue(":media", posts[k].media);
+            insertQuery.bindValue(":mediaType", posts[k].mediaType);
+            insertQuery.bindValue(":lcr_counter", "0/0/0");
+            insertQuery.bindValue(":repostid", ID);
+            insertQuery.bindValue(":time", getTime());
+            if(!insertQuery.exec()){
+                qDebug()<<"hey mmd!<<"<<insertQuery.lastError();
+            }
+        });
+        react_groupBoxLayout->addWidget(repostPushbutton);
 
         QPushButton* sendPushButton = new QPushButton;
-        //sendPushButton->setMinimumSize(0, 50);
+//        sendPushButton->setMinimumSize(0, 60);
+        sendPushButton->setMaximumSize(50, 50);
+        sendPushButton->setCursor(Qt::PointingHandCursor);
         sendPushButton->setFont(font2);
-        sendPushButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
-        sendPushButton->setText("📤");
+        sendPushButton->setStyleSheet("image: url(:/icon/icon-send-2.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
         react_groupBoxLayout->addWidget(sendPushButton);
-        sendPushButton->setMaximumWidth(60);
 
         button_groupBoxLayout->addWidget(react_groupBox);
         post_groupBoxLayout->addWidget(button_groupBox);

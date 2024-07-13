@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QList>
 
+extern bool darkTheme;
 extern QString ID;
 extern QString PhoneNumber;
 extern QString postSenderID;
@@ -53,6 +54,7 @@ public:
     QString postId;
     QString LCR_counter;
     QString tag;
+    QString suggested;
     QString seen;
     QString rePosted;
     QList<Like> likes;

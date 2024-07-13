@@ -1,5 +1,6 @@
 #include"basicclasses.h"
 
+bool darkTheme = true;
 QString ID = "Abeh", PhoneNumber = "123";
 QString postSenderID = "Abeh";
 QString postID = "22";

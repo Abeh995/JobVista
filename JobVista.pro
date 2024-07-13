@@ -14,6 +14,7 @@ CONFIG += c++11
 SOURCES += \
     basicclasses.cpp \
     createpost.cpp \
+    directmessage.cpp \
     home.cpp \
     login.cpp \
     main.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 HEADERS += \
     basicclasses.h \
     createpost.h \
+    directmessage.h \
     home.h \
     login.h \
     profile.h \
@@ -38,6 +40,7 @@ HEADERS += \
 
 FORMS += \
     createpost.ui \
+    directmessage.ui \
     home.ui \
     login.ui \
     profile.ui \
