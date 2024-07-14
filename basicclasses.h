@@ -5,7 +5,6 @@
 #include <QDateTime>
 #include <QList>
 
-
 extern QString ID;
 extern QString PhoneNumber;
 extern QString postSenderID;
@@ -18,10 +17,6 @@ QString getTime();
 extern QString postType;
 extern QString CM_name;
 
-
-
-
-// Forward Declarations
 class Time;
 class Post;
 class Comment;
@@ -33,7 +28,6 @@ class Person;
 class Job;
 class Company;
 
-// Time class
 class Time {
 public:
     QString second;
@@ -44,30 +38,28 @@ public:
     QString year;
 };
 
-// Content class
 class Content {
 public:
     QString id;
     Time time2;
     QString text;
-    QByteArray media; // Assuming picture is stored as QByteArray
-    QString mediaType; // Assuming video is stored as QByteArray
+    QByteArray media;
+    QString mediaType;
 };
 
-// Post class
 class Post : public Content {
 public:
     QByteArray profilePhoto;
     QString postId;
     QString LCR_counter;
     QString tag;
+    QString suggested;
     QString seen;
     QString rePosted;
     QList<Like> likes;
     QList<Comment> comments;
 };
 
-// Comment class
 class Comment : public Content {
 public:
     QByteArray profilePhoto;
@@ -75,7 +67,6 @@ public:
     QString commentId;
 };
 
-// Like class
 class Like {
 public:
     QString id;
@@ -86,23 +77,17 @@ public:
     Time time;
 };
 
-// DirectMessage class
 class DirectMessage : public Content {
 public:
     QString messageId;
     QString recieverId ;
 };
 
-
-
-
-// Forward declarations
 class Job;
 class Person;
 
 class Account {
 public:
-    // Other member functions here...
     QString id;
     QByteArray profilePhoto;
     QString PhoneNumber;
@@ -112,17 +97,12 @@ public:
     QStringList requests;
     QStringList suggests;
     QString Following;
-    QVector<Post> UsersPosts; // Assuming post is represented as QString for simplicity
-    QVector<QString> DirectMessage;    // Assuming message is represented as QString for simplicity
+    QVector<Post> UsersPosts;
+    QVector<QString> DirectMessage;
 };
 
 class Person : public Account {
 public:
-
-
-    //void Take_Job(Job* job);
-
-    // Other member functions here...
 
     QString name;
     QString lastName;
@@ -136,7 +116,6 @@ public:
         : Job_Name(jobName), Company_Name(companyName), Skills_Required(skillsRequired), WorkPlace_Type(workplaceType), Location(location), Type(type), Salary(salary) {}
     Job(){}
 
-    // Other member functions here...
     QString id;
     QString jobId;
     QString requests;
@@ -158,9 +137,6 @@ public:
         Company_Jobs.append(job);
         return job;
     }
-
-
-
     QString Company_Name;
     QString occupation;
     QString address;
@@ -168,10 +144,5 @@ public:
     QVector<Job*> Company_Jobs;
     QVector<Person*> Employee;
 };
-
-
-//void Person::Take_Job(Job* job) {
-//    // Implement the logic for a person taking a job
-//}
 
 #endif // BASICCLASSES_H

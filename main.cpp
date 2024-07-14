@@ -1,7 +1,10 @@
 #include "splash.h"
 #include "home.h"
 #include"basicclasses.h"
+#include "login.h"
+#include"profile.h"
 #include "createpost.h"
+#include "verification.h"
 
 #include "wholiked.h"
 #include"viewprofile.h"

@@ -18,10 +18,11 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *event);
 private slots:
+
+    void handleKeyPress(QKeyEvent *event);
     void on_pushButton_2_clicked();
 
     void on_pushButton_clicked();
-    void handleKeyPress(QKeyEvent *event);
 
     void on_pushButton_3_pressed();
 

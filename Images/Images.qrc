@@ -16,5 +16,6 @@
         <file>icon-send.png</file>
         <file>icon-send-2.png</file>
         <file>icon-unliked-2.png</file>
+        <file>icon-showpassword.png</file>
     </qresource>
 </RCC>

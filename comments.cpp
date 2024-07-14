@@ -33,6 +33,8 @@ QString filePath3,filePathKhale;
 QByteArray mediaData2;
 QString mediaType2;
 QHBoxLayout *fileDialogue_groupBoxLayout = new QHBoxLayout;
+
+
 //QString sw3;
 comments::comments(QWidget *parent) :
     QWidget(parent),
@@ -40,12 +42,10 @@ comments::comments(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
-    QVector<Comment> comments;
     setWindowTitle("Comments");
-
-    QWidget* scrollWidget = new QWidget;
-    QGridLayout* scrollLayout = new QGridLayout(scrollWidget);
+    scrollWidget = new QWidget;
+    scrollLayout = new QGridLayout(scrollWidget);
+    QVector<Comment> comments;
     scrollWidget->setLayout(scrollLayout);
     ui->scrollArea->setWidget(scrollWidget);
 
@@ -424,6 +424,10 @@ void comments::on_media_pushButton_clicked()
 
 void comments::on_send_pushButton_clicked()
 {
+
+
+
+
     QSqlQuery q, q2;
     QStringList lcr;
     q2.prepare("SELECT LCR_counter FROM Posts WHERE id = :id AND postId = :postid");
@@ -486,6 +490,147 @@ void comments::on_send_pushButton_clicked()
     if(suffix == "mp4" || suffix == "mkv"){
         mediaPlayer->stop();
     }
+
+
+    QVector<Comment> comments;
+    QSqlQuery q10;
+    q10.prepare("SELECT * FROM Comments WHERE senderId = :senderid AND postId = :postid  ORDER BY time DESC");
+    q10.bindValue(":senderid", postSenderID);
+    q10.bindValue(":postid", postID);
+
+    if(!q10.exec()){
+        qDebug() << "Error: failed to execute query -" << q10.lastError();
+    }
+    while(q10.next()){
+        Comment comment;
+        comment.id = q10.value("id").toString();
+        //profile photo
+        QSqlQuery q2;
+        q2.prepare("SELECT profilePhoto FROM Users WHERE id = :id");
+        q2.bindValue(":id", comment.id);
+        if(q2.exec()){
+            if(q2.next()){
+                QByteArray prof=q2.value("profilePhoto").toByteArray();
+                if(!prof.isEmpty()){
+
+                    comment.profilePhoto=prof;
+                }
+                else{
+                    qDebug()<< "ame is empty"<<q2.lastError();
+                }
+
+            }
+            else{
+                qDebug()<< "ame is dead be mola "<< q2.lastError();
+            }
+        } else{
+            qDebug()<< "error loading profile for id: "<< comment.id<<" ERROR: "<<q2.lastError();
+        }
+
+        comment.postId = q10.value("postId").toString();
+        comment.text = q10.value("text").toString();
+
+        QByteArray media=q10.value("media").toByteArray();
+                // Check if media is valid
+        if (!media.isEmpty()) {
+            comment.media = media;
+         } else {
+                qDebug() << "Warning: Post with ID" << comment.id << "has empty media.";
+            }
+                // Handling media (BLOBs)
+        QString mediaType = q10.value("mediaType").toString();
+        comments.append(comment);
+
+    }
+
+    int size = comments.size();
+    int id;
+    for(int i=0; i<comments.size(); i++){
+        if(comments[i].id == ID){
+            id = i;
+            break;
+        }
+    }
+    for(int i=0; i<1; i++){
+
+        QGroupBox* comment_groupBox = new QGroupBox;
+        comment_groupBox->setMinimumHeight(100);
+        comment_groupBox->setMaximumSize(500, 16777215);
+        QVBoxLayout* comment_groupBoxLayout = new QVBoxLayout;
+        comment_groupBox->setLayout(comment_groupBoxLayout);
+        comment_groupBox->setStyleSheet("border-radius:5px");
+
+        QGroupBox* info_groupBox = new QGroupBox;
+        info_groupBox->setMaximumHeight(70);
+        QHBoxLayout* info_groupboxLayout = new QHBoxLayout;
+        info_groupBox->setStyleSheet("border-radius:5px;");
+        info_groupBox->setLayout(info_groupboxLayout);
+
+        QLabel * profile_label = new QLabel;
+        profile_label->setMinimumSize(50, 50);
+        profile_label->setMaximumSize(50, 50);
+        profile_label->setScaledContents(true);
+        info_groupboxLayout->addWidget(profile_label);
+
+        QPixmap pix;
+        if (!pix.loadFromData(comments[id].profilePhoto)) {
+            qDebug() << "Error: Failed to load pixmap from profPhoto for post ID" << comments[id].id;
+        } else {
+            QPixmap circularPixmap(50, 50);
+                    circularPixmap.fill(Qt::transparent);
+
+                    QPainterPath path;
+                    path.addEllipse(0, 0, 50, 50);
+
+                    QPainter painter(&circularPixmap);
+                    painter.setClipPath(path);
+                    painter.drawPixmap(0, 0, pix.scaled(50, 50, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+
+                    profile_label->setPixmap(circularPixmap);
+        }
+
+        profile_label->setStyleSheet("border-radius: 25px;");
+
+        QLabel* id_label = new QLabel(QString(""));
+        id_label->setText(ID);
+        info_groupboxLayout->addWidget(id_label);
+
+        QGroupBox* media_groupBox = new QGroupBox;
+        QVBoxLayout* media_groupBoxLayout = new QVBoxLayout;
+        media_groupBox->setStyleSheet("background-color: rgb(250, 250, 180);");
+        media_groupBox->setLayout(media_groupBoxLayout);
+        comment_groupBoxLayout->addWidget(info_groupBox);
+
+        QLabel* postImage_label = new QLabel;
+        postImage_label->setMaximumSize(650, 300);
+        postImage_label->setScaledContents(true);
+
+//        QPixmap pix;
+        if (!pix.loadFromData(comments[id].media)) {
+            postImage_label->hide();
+            comment_groupBox->setMaximumHeight(250);
+            media_groupBox->setMaximumHeight(60);
+            qDebug() << "Error: Failed to load pixmap from media for post ID" << comments[id].id;
+        } else {
+                    postImage_label->setPixmap(pix);
+        }
+
+        postImage_label->setStyleSheet("border-radius: 25px;");
+        media_groupBoxLayout->addWidget(postImage_label);
+
+        QLabel* text_label = new QLabel;
+        text_label->setWordWrap(true);
+        text_label->setText(comments[id].text);
+        media_groupBoxLayout->addWidget(text_label);
+
+        comment_groupBoxLayout->addWidget(media_groupBox);
+        scrollLayout->addWidget(comment_groupBox);
+    }
+
+    ui->media_groupBox->setLayout(fileDialogue_groupBoxLayout);
+    ui->media_groupBox->setMaximumHeight(200);
+    ui->media_groupBox->hide();
+
 }
 
 QString comments::getTime()

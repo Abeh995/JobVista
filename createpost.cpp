@@ -40,39 +40,7 @@ createPost::createPost(QWidget *parent) :
 
     setWindowTitle("Create Post");
     ui->media_groupBox->hide();
-
-
-//    QSqlQuery q;
-//    q.prepare("SELECT media FROM Posts WHERE id = :id");
-//    q.bindValue(":id", ID);
-//    if(q.exec()){
-//        if(q.next()){
-//            QByteArray imageData = q.value(0).toByteArray();
-//            QPixmap pixmap;
-//            pixmap.loadFromData(imageData);
-//                    // Save pixmap to a file
-//                    filePath2 = QDir::homePath() + "/profilePhoto.png";
-//                    if(pixmap.save(filePath2)){
-//                        // Set the image on the button using styleSheet
-//                       // ui->profilePhoto_label->setStyleSheet(QString("QPushButton {border-image: url(%1); border-radius:55px;}").arg(imagePath));
-
-//                        imageLabel->setMinimumSize(500, 300);
-//                        ui->profilePhoto_label->setScaledContents(true);
-//                        ui->profilePhoto_label->setStyleSheet(QString("border-image: url(%1);").arg(filePath2));
-
-//                    }
-//                    else{
-//                        // Handle error if saving failed
-//                        qDebug() << "Error saving image file";
-//                        q.lastError().text();
-//                    }
-//                }
-//            }
-//            else{
-//                // Handle the error
-//                qDebug() << "Error retrieving profile photo:" << q.lastError().text();
-//            }
-
+    ui->emoji_pushButton->setDisabled(true);
 
 
 }
@@ -87,7 +55,7 @@ void createPost::on_media_pushButton_clicked()
      filePath2 = QFileDialog::getOpenFileName(this, tr("Select media"), QDir::homePath(), tr("Media Files (*.png *.jpg *.jpeg *.mp4 *.GIF *.mkv)"));
         if (!filePath2.isEmpty()) {
             filePathAme=filePath2;
-            // Save the media to the database
+
             QFile file(filePath2);
             if (file.open(QIODevice::ReadOnly)) {
                  mediaData = file.readAll();
@@ -97,11 +65,9 @@ void createPost::on_media_pushButton_clicked()
                 qDebug() << "Error opening image file:" << file.errorString();
             }
 
-            // Determine the media format
             QFileInfo fileInfo(filePath2);
             QString suffix = fileInfo.suffix().toLower();
 
-            // Clear previous media
             if (imageLabel) {
                 delete imageLabel;
                 imageLabel = nullptr;
@@ -201,7 +167,6 @@ void createPost::on_media_pushButton_clicked()
 
 void createPost::on_emoji_pushButton_clicked()
 {
-    // Set up the emoji menu
         QStringList emojis = {"😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😉", "😊"};
 
         for (const QString &emoji : emojis) {
@@ -228,13 +193,9 @@ void createPost::insertEmoji()
 void createPost::on_post_pushButton_clicked()
 {
 
-    QString newPostId;
-    QString mmd="0/0/0";
-    QSqlQuery q;
 
     QDateTime dateTime = QDateTime::currentDateTime();
 
-        // Extract the year, month, day, hour, minute, and second
         int year = dateTime.date().year();
         int month = dateTime.date().month();
         int day = dateTime.date().day();
@@ -242,7 +203,6 @@ void createPost::on_post_pushButton_clicked()
         int minute = dateTime.time().minute();
         int second = dateTime.time().second();
 
-        // Combine them into a single string
         QString timeString = QString("%1%2%3%4%5%6")
                 .arg(year, 4, 10, QChar('0'))   // Year with 4 digits
                 .arg(month, 2, 10, QChar('0'))  // Month with 2 digits
@@ -251,6 +211,9 @@ void createPost::on_post_pushButton_clicked()
                 .arg(minute, 2, 10, QChar('0')) // Minute with 2 digits
                 .arg(second, 2, 10, QChar('0'));// Second with 2 digits
 
+        QString newPostId;
+        QString mmd="0/0/0";
+        QSqlQuery q;
     q.exec("SELECT postCounter FROM Users WHERE id = '"+ID+"'");
     if(q.first()){
 
@@ -285,29 +248,17 @@ void createPost::on_post_pushButton_clicked()
 
         qDebug()<< "ame have problem" << ame.lastError();
     }
-    q.exec("UPDATE Posts SET mediaType  ='"+mediaType+"' WHERE id= '"+ID+"' AND postId = '"+newPostId+"'");
-    q.exec("UPDATE Posts SET likersId  ='"+QString("")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
+    if(mediaType!=""){
+        q.exec("UPDATE Posts SET mediaType  ='"+mediaType+"' WHERE id= '"+ID+"' AND postId = '"+newPostId+"'");
+    }
     q.exec("UPDATE Posts SET comments  ='"+QString("")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET LCR_counter  ='"+mmd+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET rePostId  ='"+QString("empty")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
     q.exec("UPDATE Posts SET time  ='"+timeString+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
-//    qint64 timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
-//    QString qstr=QString("UPDATE Posts SET time  = %1 WHERE id= %2 AND postId = %3 ").arg(timestamp).arg(ID).arg(newPostId);
-//    if(!q.exec(qstr)){
-//        qWarning()<<" faild to update post"<<q.lastError();
-//    }
-//    else{
-//        qDebug()<<"succsess";
-//    }
 
-//    ui->profilePhoto_label->setText(filePathAme);
-//    ui->name_label->setText(filePath2);
-
-//    mediaPlayer->stop();
     if(sw2 == "mp4" || sw2 == "mkv"){
         mediaPlayer->stop();
     }
-//    this->close();
 }
 
 void createPost::closeEvent(QCloseEvent *event)
@@ -324,5 +275,76 @@ void createPost::closeEvent(QCloseEvent *event)
     }
     // Call the base class implementation of closeEvent
     QWidget::closeEvent(event);
+}
+
+
+void createPost::on_schedule_pushButton_clicked()
+{
+
+
+    QDateTime dateTime = ui->dateTimeEdit->dateTime();
+        int year = dateTime.date().year();
+        int month = dateTime.date().month();
+        int day = dateTime.date().day();
+        int hour = dateTime.time().hour();
+        int minute = dateTime.time().minute();
+        int second = dateTime.time().second();
+        QString timeString = QString("%1%2%3%4%5%6")
+                .arg(year, 4, 10, QChar('0'))   // Year with 4 digits
+                .arg(month, 2, 10, QChar('0'))  // Month with 2 digits
+                .arg(day, 2, 10, QChar('0'))    // Day with 2 digits
+                .arg(hour, 2, 10, QChar('0'))   // Hour with 2 digits
+                .arg(minute, 2, 10, QChar('0')) // Minute with 2 digits
+                .arg(second, 2, 10, QChar('0'));// Second with 2 digits
+
+        QString newPostId;
+        QString mmd="0/0/0";
+        QSqlQuery q;
+    q.exec("SELECT postCounter FROM Users WHERE id = '"+ID+"'");
+    if(q.first()){
+
+        newPostId=q.value(0).toString();
+        int ame=newPostId.toInt();
+        ame+=1;
+        newPostId=QString("%1").arg(ame);
+        ui->profilePhoto_label->setText(newPostId);
+        ui->name_label->setText(ID);
+        q.exec("UPDATE Users SET postCounter = '"+QString("%1").arg(ame)+"' WHERE id ='"+ID+"'");
+    }
+    else{
+        qDebug()<< "MMD!!!!!!!!!!!!!!!";
+    }
+
+    q.exec("INSERT INTO Posts (id, postId, tag ) VALUES ('"+ID+"','"+newPostId+"','"+ui->tag_comboBox->currentText()+"' )");
+    q.exec("UPDATE Posts SET text = '" + ui->postText_textEdit->toPlainText() + "' WHERE id = '" + ID + "' AND postId = '" + newPostId + "'");
+    QFile file(filePathAme);
+    if (file.open(QIODevice::ReadOnly)) {
+        QSqlQuery ame;
+        QByteArray mediaDataAme=file.readAll();
+        ame.prepare("UPDATE Posts SET media  = :photo WHERE id= :id AND postId = :newPostId");
+        ame.bindValue(":photo", mediaDataAme);
+        ame.bindValue(":id", ID);
+        ame.bindValue(":newPostId", newPostId);
+        if (ame.exec()) {
+            qDebug() << "Yay!";
+        } else {
+            qDebug() << ame.executedQuery();
+            qDebug() << ame.lastError();
+        }
+
+        qDebug()<< "ame have problem" << ame.lastError();
+    }
+    if(mediaType!=""){
+        q.exec("UPDATE Posts SET mediaType  ='"+mediaType+"' WHERE id= '"+ID+"' AND postId = '"+newPostId+"'");
+    }
+    q.exec("UPDATE Posts SET comments  ='"+QString("")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
+    q.exec("UPDATE Posts SET LCR_counter  ='"+mmd+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
+    q.exec("UPDATE Posts SET rePostId  ='"+QString("empty")+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
+    q.exec("UPDATE Posts SET time  ='"+timeString+"' WHERE id='"+ID+"' AND postId = '"+newPostId+"'");
+
+    if(sw2 == "mp4" || sw2 == "mkv"){
+        mediaPlayer->stop();
+    }
+    this->close();
 }
 

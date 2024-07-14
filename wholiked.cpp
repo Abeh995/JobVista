@@ -2,6 +2,7 @@
 #include "ui_wholiked.h"
 #include"splash.h"
 #include "basicclasses.h"
+#include "viewprofile.h"
 
 #include <QGroupBox>
 #include<QHBoxLayout>
@@ -104,7 +105,6 @@ wholiked::wholiked(QWidget *parent) :
 
         QPushButton* id_pushButton= new QPushButton;
         QFont font("Segoe UI Emoji", 13);
-//        likePushButton->setMaximumWidth(60);
         id_pushButton->setMinimumSize(50, 30);
         id_pushButton->setFont(font);
         id_pushButton->setText(likers[i].id);
@@ -117,8 +117,9 @@ wholiked::wholiked(QWidget *parent) :
         QObject::connect(id_pushButton, &QPushButton::clicked, [=]() mutable {
             int k=id_pushButton->objectName().toInt();
             viewProfileID=likers[k].id;
-            //////////////////////////////////////////////////////////////////////////// show VIEW PROFILE ///////////////////////////////////
-//            this->close();
+            viewprofile* window = new viewprofile;
+            window->show();
+            //            this->close();
         });
 
         QSpacerItem* info_horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Fixed);

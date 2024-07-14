@@ -16,6 +16,8 @@
 #include <QWidget>
 #include<QMenu>
 #include <QGroupBox>
+#include <QGridLayout>
+#include <QWidget>
 
 
 namespace Ui {
@@ -28,6 +30,8 @@ class comments : public QWidget
 
 public:
     explicit comments(QWidget *parent = nullptr);
+    QWidget* scrollWidget;
+    QGridLayout* scrollLayout;
     ~comments();
 
 private slots:

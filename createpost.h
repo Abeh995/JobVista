@@ -39,6 +39,8 @@ private slots:
 
     void on_post_pushButton_clicked();
 
+    void on_schedule_pushButton_clicked();
+
 private:
     QLabel *imageLabel = nullptr;
         QLabel *gifLabel = nullptr;

@@ -3,7 +3,6 @@
 #include "basicclasses.h"
 #include"wholiked.h"
 
-
 #include <QApplication>
 #include <QTabWidget>
 #include <QTabBar>
@@ -115,30 +114,8 @@ viewprofile::viewprofile(QWidget *parent) :
                 while(qPost.next()){
                     Post post;
 
-                    post.id = q.value("id").toString();
-
-/*
-//                    QSqlQuery q2;
-//                    q2.prepare("SELECT profilePhoto FROM Users WHERE id = :id");
-//                    q2.bindValue(":id", q.value("id").toString());
-//                    if(q2.exec()){
-//                        if(q2.next()){
-//                            QByteArray prof=q2.value("profilePhoto").toByteArray();
-//                            if(!prof.isEmpty()){
-
-//                                post.profilePhoto=prof;
-//                            }
-//                            else{
-//                                qDebug()<< "ame is empty"<<q2.lastError();
-//                            }
-
-//                        }
-//                        else{
-//                            qDebug()<< "ame is dead be mola "<< q2.lastError();
-//                        }
-//                    } else{
-//                        qDebug()<< "error loading profile for id: "<< post.id<<" ERROR: "<<q2.lastError();
-//                    } */
+                    post.id = qPost.value("id").toString();
+                    post.rePosted = qPost.value("rePostId").toString();
 
                     post.postId = qPost.value("postId").toString();
                     post.text = qPost.value("text").toString();
@@ -152,7 +129,6 @@ viewprofile::viewprofile(QWidget *parent) :
                         }
                             // Handling media (BLOBs)
                     QString mediaType = qPost.value("mediaType").toString();
-                    post.rePosted = q.value("rePostId").toString();
                     posts.append(post);
                 }
             QStringList  followersList;
@@ -176,10 +152,7 @@ viewprofile::viewprofile(QWidget *parent) :
                 ui->college_PNumber_label->setText(person.college);
                 ui->address_label->hide();
                 ui->followers_connections_label->setText(QString("%1 followers").arg(person.connection_counter));
-                // for debuging:
-                ui->email_label->setNum(posts.size());
 
-                // end of debug.
                 for(int i = 0 ; i<connectionsList.size() ; i++){
                     if(connectionsList[i] == ID){
                         ui->follow_pushButton->setText("Connected");
@@ -220,7 +193,7 @@ viewprofile::viewprofile(QWidget *parent) :
 
             QGroupBox* post_groupBox = new QGroupBox;
             if(posts[i].rePosted != "empty"){
-                post_groupBox->setTitle(QString (" from ' %1 '").arg(posts[i].rePosted));
+                post_groupBox->setTitle(QString (" from ' %1 'Reposted").arg(posts[i].rePosted));
             }
             //post_groupBox->setObjectName(QString("post_groupBox_%1").arg(i));
             post_groupBox->setMinimumHeight(500);
@@ -251,18 +224,6 @@ viewprofile::viewprofile(QWidget *parent) :
 
             QSpacerItem* info_horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Fixed);
             info_groupboxLayout->addSpacerItem(info_horizontalSpacer);
-
-//            //follow PushButton
-
-//            QPushButton* follow_pushButton = new QPushButton;
-//            follow_pushButton->setCursor(Qt::OpenHandCursor);
-//            follow_pushButton->setMinimumSize(0, 44);
-//            follow_pushButton->setMaximumSize(110, 16777215);
-//            QFont font("Pristina", 17);
-//            follow_pushButton->setFont(font);
-//            follow_pushButton->setText("+follow");
-//            follow_pushButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); color: rgb(41, 69, 255); border-radius: 20px;");
-//            info_groupboxLayout->addWidget(follow_pushButton);
 
             post_groupBoxLayout->addWidget(info_groupBox);
 
@@ -365,12 +326,9 @@ viewprofile::viewprofile(QWidget *parent) :
             react_groupBox->setLayout(react_groupBoxLayout);
 
             QPushButton* likePushButton = new QPushButton;
-    //        likePushButton->setObjectName(QString("likePushButton-%1").arg(i));
             QFont font2("MS Shell Dlg 2", 23);
             likePushButton->setMaximumWidth(60);
-            //likePushButton->setMinimumSize(0, 40);
             likePushButton->setFont(font2);
-    //        likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
             react_groupBoxLayout->addWidget(likePushButton);
 
             // check post is liked
@@ -399,12 +357,10 @@ viewprofile::viewprofile(QWidget *parent) :
                 query.bindValue(":senderid", posts[k].id);
                 query.bindValue(":postid", posts[k].postId);
 
-                // Execute the query
                 if (!query.exec()) {
                     qDebug() << "Query execution failed: " << query.lastError();
                 }
 
-                // Check if any results were returned
                 if (query.next()) {
                     // Record exists, delete it
                     QSqlQuery deleteQuery;
@@ -417,7 +373,6 @@ viewprofile::viewprofile(QWidget *parent) :
                         qDebug() << "Delete query execution failed: " << deleteQuery.lastError();
                     }
 
-                    // Update the button style to "unliked"
                     likePushButton->setStyleSheet("image: url(:/icon/icon-unliked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
                 } else {
                     // Record does not exist, insert it
@@ -432,31 +387,25 @@ viewprofile::viewprofile(QWidget *parent) :
                         qDebug() << "Insert query execution failed: " << insertQuery.lastError();
                     }
 
-                    // Update the button style to "liked"
                     likePushButton->setStyleSheet("image: url(:/icon/icon-liked.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
                 }
             });
 
             QPushButton* commentPushButton = new QPushButton;
-            //commentPushButton->setMinimumSize(0, 40);
             commentPushButton->setFont(font2);
             commentPushButton->setStyleSheet("image: url(:/icon/icon-comment.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
             react_groupBoxLayout->addWidget(commentPushButton);
             commentPushButton->setMaximumWidth(60);
 
             QPushButton* repostPushbutton = new QPushButton;
-            //repostPushbutton->setMinimumSize(0, 50);
             repostPushbutton->setFont(font2);
-            repostPushbutton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
-            repostPushbutton->setText("🔁");
+            repostPushbutton->setStyleSheet("image: url(:/icon/icon-repost.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
             react_groupBoxLayout->addWidget(repostPushbutton);
             repostPushbutton->setMaximumWidth(60);
 
             QPushButton* sendPushButton = new QPushButton;
-            //sendPushButton->setMinimumSize(0, 50);
             sendPushButton->setFont(font2);
-            sendPushButton->setStyleSheet("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
-            sendPushButton->setText("📤");
+            sendPushButton->setStyleSheet("image: url(:/icon/icon-send-2.png);background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 0), stop:1 rgba(255, 255, 255, 0)); border-radius: 20px;");
             react_groupBoxLayout->addWidget(sendPushButton);
             sendPushButton->setMaximumWidth(60);
 
